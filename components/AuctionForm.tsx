@@ -10,6 +10,13 @@ import {
   emptyAuctionForm,
   defaultAuctionTimes,
 } from "@/lib/admin";
+import {
+  atLocalTime,
+  nextBusinessDayAt13,
+  nextKoreaBusinessDay,
+  toLocalInputValue,
+} from "@/lib/koreaHolidays";
+import { formatDateTime } from "@/lib/format";
 
 type Props = {
   mode: "create" | "edit";
@@ -247,9 +254,45 @@ export function AuctionForm({
         )}
       </div>
 
-      <div className="field-row">
+      <div className="schedule-block">
         <div className="field">
           <label htmlFor="start_at">시작 시간</label>
+          <div className="time-presets" role="group" aria-label="시작 시간 빠른 설정">
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() =>
+                setForm((f) => ({ ...f, start_at: toLocalInputValue(new Date()) }))
+              }
+            >
+              지금 시작
+            </button>
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() => {
+                const d = new Date();
+                d.setHours(d.getHours() + 1, 0, 0, 0);
+                setForm((f) => ({ ...f, start_at: toLocalInputValue(d) }));
+              }}
+            >
+              1시간 후
+            </button>
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() => {
+                const d = new Date();
+                d.setDate(d.getDate() + 1);
+                setForm((f) => ({
+                  ...f,
+                  start_at: toLocalInputValue(atLocalTime(d, 9, 0)),
+                }));
+              }}
+            >
+              내일 오전 9시
+            </button>
+          </div>
           <input
             id="start_at"
             type="datetime-local"
@@ -258,8 +301,70 @@ export function AuctionForm({
             required
           />
         </div>
+
         <div className="field">
           <label htmlFor="end_at">종료 시간</label>
+          <div className="time-presets" role="group" aria-label="종료 시간 빠른 설정">
+            <button
+              type="button"
+              className="btn time-preset-btn time-preset-primary"
+              onClick={() => {
+                const base = form.start_at ? new Date(form.start_at) : new Date();
+                let end = nextBusinessDayAt13(base);
+                if (end.getTime() <= base.getTime()) {
+                  end = nextBusinessDayAt13(end);
+                }
+                setForm((f) => ({ ...f, end_at: toLocalInputValue(end) }));
+              }}
+            >
+              다음 영업일 오후 1시
+            </button>
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() => {
+                const base = form.start_at ? new Date(form.start_at) : new Date();
+                const end = atLocalTime(base, 13, 0);
+                if (end.getTime() <= base.getTime()) {
+                  const next = new Date(base);
+                  next.setDate(next.getDate() + 1);
+                  setForm((f) => ({
+                    ...f,
+                    end_at: toLocalInputValue(atLocalTime(next, 13, 0)),
+                  }));
+                  return;
+                }
+                setForm((f) => ({ ...f, end_at: toLocalInputValue(end) }));
+              }}
+            >
+              오늘 오후 1시
+            </button>
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() => {
+                const base = form.start_at ? new Date(form.start_at) : new Date();
+                const day = nextKoreaBusinessDay(base);
+                setForm((f) => ({
+                  ...f,
+                  end_at: toLocalInputValue(atLocalTime(day, 13, 0)),
+                }));
+              }}
+            >
+              내일(영업일) 오후 1시
+            </button>
+            <button
+              type="button"
+              className="btn time-preset-btn"
+              onClick={() => {
+                const base = form.start_at ? new Date(form.start_at) : new Date();
+                const end = new Date(base.getTime() + 24 * 60 * 60 * 1000);
+                setForm((f) => ({ ...f, end_at: toLocalInputValue(end) }));
+              }}
+            >
+              시작 + 24시간
+            </button>
+          </div>
           <input
             id="end_at"
             type="datetime-local"
@@ -267,6 +372,12 @@ export function AuctionForm({
             onChange={(e) => setForm({ ...form, end_at: e.target.value })}
             required
           />
+          <p className="field-hint">
+            기본값은 주말·공휴일을 제외한 <strong>다음 영업일 오후 1시</strong>입니다.
+            {form.end_at
+              ? ` 현재 선택: ${formatDateTime(new Date(form.end_at).toISOString())}`
+              : ""}
+          </p>
         </div>
       </div>
 
