@@ -1,3 +1,5 @@
+import { nextBusinessDayAt13, toLocalInputValue } from "@/lib/koreaHolidays";
+
 export const MAX_PHOTOS = 20;
 export const FUEL_OPTIONS = [
   "가솔린",
@@ -56,13 +58,14 @@ export const emptyAuctionForm: AuctionFormState = {
 
 export function defaultAuctionTimes() {
   const start = new Date();
-  const end = new Date(start.getTime() + 60 * 60 * 1000);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const toLocal = (d: Date) =>
-    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  let end = nextBusinessDayAt13(start);
+  // Ensure end is always after start
+  if (end.getTime() <= start.getTime()) {
+    end = nextBusinessDayAt13(end);
+  }
   return {
-    start_at: toLocal(start),
-    end_at: toLocal(end),
+    start_at: toLocalInputValue(start),
+    end_at: toLocalInputValue(end),
   };
 }
 
