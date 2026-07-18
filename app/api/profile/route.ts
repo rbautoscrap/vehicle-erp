@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { createSession, requireSession } from "@/lib/auth";
 import { writeStore, toPublicUser } from "@/lib/db";
+import { digitsOnly } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,7 +51,7 @@ export async function PATCH(req: NextRequest) {
       if (session.role === "admin") {
         const name = String(body.name ?? user.name).trim();
         const email = String(body.email ?? user.email).trim();
-        const phone = String(body.phone ?? user.phone).trim();
+        const phone = digitsOnly(String(body.phone ?? user.phone));
         const company = String(body.company ?? user.company).trim();
         const address = String(body.address ?? user.address).trim();
         if (!name) {
