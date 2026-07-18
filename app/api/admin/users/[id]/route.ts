@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { requireSession } from "@/lib/auth";
 import { writeStore, toAdminUserView, type Role, type UserStatus } from "@/lib/db";
+import { digitsOnly } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -111,7 +112,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     }
 
     if (hasOwn(body, "phone")) {
-      user.phone = String(body.phone ?? "").trim();
+      user.phone = digitsOnly(String(body.phone ?? ""));
     }
 
     if (hasOwn(body, "address")) {
