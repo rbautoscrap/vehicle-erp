@@ -13,6 +13,15 @@ import { toServablePhotoUrl } from "@/lib/uploads";
 const dataDir = path.join(process.cwd(), "data");
 const dbPath = path.join(dataDir, "store.json");
 
+/** Absolute paths for backup/restore and other data tools. */
+export function getDataPaths() {
+  return {
+    dataDir,
+    dbPath,
+    uploadsDir: path.join(dataDir, "uploads"),
+  };
+}
+
 export type Role = "admin" | "user";
 export type UserStatus = "pending" | "active" | "suspended";
 
