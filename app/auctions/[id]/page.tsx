@@ -283,23 +283,25 @@ export default function AuctionDetailPage() {
             <label htmlFor="bid" className="bid-panel-label">
               Bid amount ({currencyMeta.shortLabel})
             </label>
-            <div className="bid-form bid-form-krw">
-              <span className="bid-currency" aria-hidden="true">
-                {currencyMeta.shortLabel}
-              </span>
-              <input
-                id="bid"
-                inputMode="decimal"
-                autoComplete="off"
-                value={amount}
-                onChange={(e) => setAmount(formatMoneyInput(e.target.value, currency))}
-                placeholder={formatMoneyInput(minInCurrency, currency)}
-                required
-              />
-              <span className="bid-unit" aria-hidden="true">
-                {currencyMeta.symbol}
-              </span>
-              <button className="btn btn-primary" type="submit" disabled={submitting}>
+            <div className="bid-form">
+              <div className="bid-amount-group">
+                <span className="bid-currency" aria-hidden="true">
+                  {currencyMeta.shortLabel}
+                </span>
+                <input
+                  id="bid"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  value={amount}
+                  onChange={(e) => setAmount(formatMoneyInput(e.target.value, currency))}
+                  placeholder={formatMoneyInput(minInCurrency, currency)}
+                  required
+                />
+                <span className="bid-unit" aria-hidden="true">
+                  {currencyMeta.symbol}
+                </span>
+              </div>
+              <button className="btn btn-primary bid-submit" type="submit" disabled={submitting}>
                 {submitting
                   ? "Saving…"
                   : hasMyBid
