@@ -8,6 +8,7 @@ import {
   type FxRates,
 } from "@/lib/currency";
 import { normalizeSaleType } from "@/lib/saleTypes";
+import { toServablePhotoUrl } from "@/lib/uploads";
 
 const dataDir = path.join(process.cwd(), "data");
 const dbPath = path.join(dataDir, "store.json");
@@ -201,7 +202,9 @@ function normalizeAuction(raw: Partial<Auction> & { id: number }): Auction {
       return Number.isFinite(n) && n > 0 ? n : null;
     })(),
     closed_at: raw.closed_at ? String(raw.closed_at) : null,
-    photos: Array.isArray(raw.photos) ? raw.photos.map(String) : [],
+    photos: Array.isArray(raw.photos)
+      ? raw.photos.map((p) => toServablePhotoUrl(String(p)))
+      : [],
     description: notes,
     start_price: Number(raw.start_price) || 0,
     start_at: String(raw.start_at || ""),

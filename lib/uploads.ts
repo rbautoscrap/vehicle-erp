@@ -1,7 +1,19 @@
 import fs from "fs";
 import path from "path";
 
-const UPLOAD_ROOT = path.join(process.cwd(), "public", "uploads", "auctions");
+/**
+ * Store uploads under `data/` (writable at runtime in production).
+ * Served via `/api/uploads/...` because Next.js does not serve files
+ * written into `public/` after `next build`.
+ */
+const UPLOAD_ROOT = path.join(process.cwd(), "data", "uploads", "auctions");
+/** Legacy path used before production fix */
+const LEGACY_UPLOAD_ROOT = path.join(
+  process.cwd(),
+  "public",
+  "uploads",
+  "auctions"
+);
 const MAX_PHOTOS = 20;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
@@ -9,6 +21,38 @@ export { MAX_PHOTOS };
 
 export function auctionUploadDir(auctionId: number) {
   return path.join(UPLOAD_ROOT, String(auctionId));
+}
+
+export function resolveUploadFile(relativePath: string): string | null {
+  const safe = relativePath.replace(/\\/g, "/").replace(/^\/+/, "");
+  if (!safe || safe.includes("..")) return null;
+
+  const candidates = [
+    path.join(process.cwd(), "data", "uploads", safe),
+    path.join(process.cwd(), "public", "uploads", safe),
+  ];
+
+  for (const full of candidates) {
+    const rootA = path.join(process.cwd(), "data", "uploads");
+    const rootB = path.join(process.cwd(), "public", "uploads");
+    const normalized = path.normalize(full);
+    const underA =
+      normalized === rootA || normalized.startsWith(rootA + path.sep);
+    const underB =
+      normalized === rootB || normalized.startsWith(rootB + path.sep);
+    if ((underA || underB) && fs.existsSync(normalized) && fs.statSync(normalized).isFile()) {
+      return normalized;
+    }
+  }
+  return null;
+}
+
+export function contentTypeFor(filePath: string) {
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === ".png") return "image/png";
+  if (ext === ".webp") return "image/webp";
+  if (ext === ".gif") return "image/gif";
+  return "image/jpeg";
 }
 
 export async function saveAuctionPhotos(
@@ -45,15 +89,29 @@ export async function saveAuctionPhotos(
     const filename = `${String(i + 1).padStart(2, "0")}-${Date.now()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(path.join(dir, filename), buffer);
-    urls.push(`/uploads/auctions/${auctionId}/${filename}`);
+    // API route serves runtime uploads in production
+    urls.push(`/api/uploads/auctions/${auctionId}/${filename}`);
   }
 
   return urls;
 }
 
 export function deleteAuctionPhotos(auctionId: number) {
-  const dir = auctionUploadDir(auctionId);
-  if (fs.existsSync(dir)) {
-    fs.rmSync(dir, { recursive: true, force: true });
+  for (const dir of [
+    auctionUploadDir(auctionId),
+    path.join(LEGACY_UPLOAD_ROOT, String(auctionId)),
+  ]) {
+    if (fs.existsSync(dir)) {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   }
+}
+
+/** Normalize stored photo URLs to the API-served path. */
+export function toServablePhotoUrl(url: string) {
+  const raw = String(url || "").trim();
+  if (!raw) return raw;
+  if (raw.startsWith("/api/uploads/")) return raw;
+  if (raw.startsWith("/uploads/")) return `/api${raw}`;
+  return raw;
 }
