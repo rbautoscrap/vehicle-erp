@@ -3,7 +3,7 @@ import path from "path";
 
 /**
  * Store uploads under `data/` (writable at runtime in production).
- * Served via `/api/uploads/...` because Next.js does not serve files
+ * Served via `/api/photo?p=...` because Next.js does not serve files
  * written into `public/` after `next build`.
  */
 const UPLOAD_ROOT = path.join(process.cwd(), "data", "uploads", "auctions");
@@ -40,7 +40,11 @@ export function resolveUploadFile(relativePath: string): string | null {
       normalized === rootA || normalized.startsWith(rootA + path.sep);
     const underB =
       normalized === rootB || normalized.startsWith(rootB + path.sep);
-    if ((underA || underB) && fs.existsSync(normalized) && fs.statSync(normalized).isFile()) {
+    if (
+      (underA || underB) &&
+      fs.existsSync(normalized) &&
+      fs.statSync(normalized).isFile()
+    ) {
       return normalized;
     }
   }
@@ -53,6 +57,10 @@ export function contentTypeFor(filePath: string) {
   if (ext === ".webp") return "image/webp";
   if (ext === ".gif") return "image/gif";
   return "image/jpeg";
+}
+
+function photoApiUrl(auctionId: number, filename: string) {
+  return `/api/photo?p=${encodeURIComponent(`auctions/${auctionId}/${filename}`)}`;
 }
 
 export async function saveAuctionPhotos(
@@ -89,8 +97,7 @@ export async function saveAuctionPhotos(
     const filename = `${String(i + 1).padStart(2, "0")}-${Date.now()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(path.join(dir, filename), buffer);
-    // API route serves runtime uploads in production
-    urls.push(`/api/uploads/auctions/${auctionId}/${filename}`);
+    urls.push(photoApiUrl(auctionId, filename));
   }
 
   return urls;
@@ -111,7 +118,31 @@ export function deleteAuctionPhotos(auctionId: number) {
 export function toServablePhotoUrl(url: string) {
   const raw = String(url || "").trim();
   if (!raw) return raw;
-  if (raw.startsWith("/api/uploads/")) return raw;
-  if (raw.startsWith("/uploads/")) return `/api${raw}`;
+  if (raw.startsWith("/api/photo?")) return raw;
+
+  // /api/uploads/auctions/1/file.jpg  or  /uploads/auctions/1/file.jpg
+  const m = raw.match(/^(?:\/api)?\/uploads\/(auctions\/\d+\/[^/?#]+)$/i);
+  if (m) {
+    return `/api/photo?p=${encodeURIComponent(m[1])}`;
+  }
   return raw;
+}
+
+/** Relative path inside data/uploads for ZIP etc. */
+export function photoUrlToRelativePath(url: string): string | null {
+  const raw = String(url || "").trim();
+  if (!raw) return null;
+
+  if (raw.startsWith("/api/photo?")) {
+    try {
+      const u = new URL(raw, "http://local");
+      const p = u.searchParams.get("p");
+      return p ? p.replace(/^\/+/, "") : null;
+    } catch {
+      return null;
+    }
+  }
+
+  const m = raw.match(/^(?:\/api)?\/uploads\/(auctions\/\d+\/[^/?#]+)$/i);
+  return m ? m[1] : null;
 }

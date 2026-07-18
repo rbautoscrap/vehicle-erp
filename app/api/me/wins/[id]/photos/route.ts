@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 import { requireSession } from "@/lib/auth";
 import { resolveAuctionStatus, getWinningBid, readStore } from "@/lib/db";
+import { photoUrlToRelativePath, resolveUploadFile } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,14 +60,10 @@ export async function GET(
   let added = 0;
 
   for (const photoUrl of photos) {
-    if (!photoUrl.startsWith("/uploads/auctions/")) continue;
-    const filePath = path.join(process.cwd(), "public", photoUrl.replace(/^\//, ""));
-    const resolved = path.resolve(filePath);
-    const uploadsRoot = path.resolve(process.cwd(), "public", "uploads", "auctions");
-    if (!resolved.startsWith(uploadsRoot + path.sep) && resolved !== uploadsRoot) {
-      continue;
-    }
-    if (!fs.existsSync(resolved)) continue;
+    const relative = photoUrlToRelativePath(photoUrl);
+    if (!relative) continue;
+    const resolved = resolveUploadFile(relative);
+    if (!resolved) continue;
 
     const base = path.basename(resolved);
     zip.file(`${String(added + 1).padStart(2, "0")}-${base}`, fs.readFileSync(resolved));
