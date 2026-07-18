@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PhoneInput } from "@/components/PhoneInput";
+import { digitsOnly } from "@/lib/phone";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -47,7 +49,7 @@ export default function SignupPage() {
           password: form.password,
           name: form.name,
           email: form.email,
-          phone: form.phone,
+          phone: digitsOnly(form.phone),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -107,12 +109,12 @@ export default function SignupPage() {
         </div>
         <div className="field">
           <label htmlFor="phone">Phone</label>
-          <input
+          <PhoneInput
             id="phone"
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onChange={(phone) => setForm((prev) => ({ ...prev, phone }))}
             autoComplete="tel"
-            placeholder="010-0000-0000"
+            placeholder="01012345678"
           />
         </div>
         <div className="field">
