@@ -8,10 +8,6 @@ export function PartnerBanner() {
     >
       <span className="partner-banner-main">
         <strong>KOREA AUTO TRADE</strong>
-        <span className="partner-banner-sep" aria-hidden="true">
-          ·
-        </span>
-        <span>Accident vehicle homepage</span>
       </span>
       <span className="partner-banner-cta">Visit site</span>
     </a>
