@@ -1,0 +1,28 @@
+{
+  "name": "vehicle-erp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/serve.js",
+    "dev:clean": "node scripts/serve.js --clean",
+    "clean": "node scripts/clean-next.js",
+    "build": "node scripts/build-safe.js",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jose": "^5.9.6",
+    "jszip": "^3.10.1",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}
