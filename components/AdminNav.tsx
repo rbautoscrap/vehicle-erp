@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/admin/users", label: "회원 관리" },
   { href: "/admin/analytics", label: "회원 분석" },
   { href: "/admin/fx", label: "환율" },
+  { href: "/admin/backup", label: "백업/복원" },
 ];
 
 export function AdminNav() {
