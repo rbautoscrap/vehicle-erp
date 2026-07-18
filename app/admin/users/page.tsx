@@ -1,9 +1,18 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, useAuth } from "@/components/AppShell";
 import { AdminNav } from "@/components/AdminNav";
+import { PhoneInput } from "@/components/PhoneInput";
+import { digitsOnly } from "@/lib/phone";
 import { formatDateTime } from "@/lib/format";
 
 type AdminUser = {
@@ -67,7 +76,7 @@ function toEditForm(u: AdminUser): EditForm {
     username: u.username || "",
     name: u.name || "",
     email: u.email || "",
-    phone: u.phone || "",
+    phone: digitsOnly(u.phone || ""),
     company: u.company || "",
     address: u.address || "",
     new_password: "",
@@ -87,6 +96,7 @@ export default function AdminUsersPage() {
   const [editForm, setEditForm] = useState<EditForm>(emptyEditForm());
   const [editError, setEditError] = useState("");
   const [savingEdit, setSavingEdit] = useState(false);
+  const backdropCloseReady = useRef(false);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/admin/users");
@@ -120,12 +130,13 @@ export default function AdminUsersPage() {
   }, [loading, user, router]);
 
   useEffect(() => {
-    if (user?.role === "admin") {
-      load();
-      const timer = setInterval(load, 5000);
-      return () => clearInterval(timer);
-    }
-  }, [user, load]);
+    if (user?.role !== "admin") return;
+    load();
+    // Avoid refreshing while the edit dialog is open (focus/selection stability).
+    if (editing) return;
+    const timer = setInterval(load, 5000);
+    return () => clearInterval(timer);
+  }, [user, load, editing]);
 
   function openEdit(u: AdminUser) {
     setEditing(u);
@@ -176,7 +187,7 @@ export default function AdminUsersPage() {
         username: editForm.username.trim(),
         name: editForm.name.trim(),
         email: editForm.email.trim(),
-        phone: editForm.phone.trim(),
+        phone: digitsOnly(editForm.phone),
         company: editForm.company.trim(),
         address: editForm.address.trim(),
       };
@@ -489,8 +500,20 @@ export default function AdminUsersPage() {
         <div
           className="user-edit-backdrop"
           role="presentation"
+          onMouseDown={(e) => {
+            // Only close when both press and release happen on the backdrop
+            // (prevents close while drag-selecting text or pasting in inputs).
+            backdropCloseReady.current = e.target === e.currentTarget;
+          }}
           onClick={(e) => {
-            if (e.target === e.currentTarget && !savingEdit) closeEdit();
+            if (
+              backdropCloseReady.current &&
+              e.target === e.currentTarget &&
+              !savingEdit
+            ) {
+              closeEdit();
+            }
+            backdropCloseReady.current = false;
           }}
         >
           <div
@@ -498,6 +521,7 @@ export default function AdminUsersPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="user-edit-title"
+            onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="actions" style={{ justifyContent: "space-between" }}>
               <h2 id="user-edit-title" style={{ margin: 0, fontSize: "1.1rem" }}>
@@ -554,11 +578,11 @@ export default function AdminUsersPage() {
                 </div>
                 <div className="field">
                   <label htmlFor="edit_phone">연락처</label>
-                  <input
+                  <PhoneInput
                     id="edit_phone"
                     value={editForm.phone}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, phone: e.target.value })
+                    onChange={(phone) =>
+                      setEditForm((prev) => ({ ...prev, phone }))
                     }
                   />
                 </div>
