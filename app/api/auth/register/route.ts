@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { writeStore, toPublicUser } from "@/lib/db";
+import { digitsOnly } from "@/lib/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
     const password = String(body.password || "");
     const name = String(body.name || "").trim();
     const email = String(body.email || "").trim();
-    const phone = String(body.phone || "").trim();
+    const phone = digitsOnly(String(body.phone || ""));
 
     if (!username || !password || !name) {
       return NextResponse.json(
