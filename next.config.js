@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: "50mb",
+      bodySizeLimit: "120mb",
     },
   },
   // Runtime-uploaded files are served by /api/uploads (not public/ after build).
