@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell, useAuth } from "@/components/AppShell";
+import { PhoneInput } from "@/components/PhoneInput";
+import { digitsOnly } from "@/lib/phone";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -30,7 +32,7 @@ export default function ProfilePage() {
         address: user.address || "",
         name: user.name || "",
         email: user.email || "",
-        phone: user.phone || "",
+        phone: digitsOnly(user.phone || ""),
         company: user.company || "",
       }));
     }
@@ -57,7 +59,7 @@ export default function ProfilePage() {
           ? {
               name: form.name,
               email: form.email,
-              phone: form.phone,
+              phone: digitsOnly(form.phone),
               company: form.company,
               address: form.address,
               current_password: form.current_password,
@@ -151,10 +153,10 @@ export default function ProfilePage() {
             </div>
             <div className="field">
               <label htmlFor="phone">연락처</label>
-              <input
+              <PhoneInput
                 id="phone"
                 value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                onChange={(phone) => setForm((prev) => ({ ...prev, phone }))}
               />
             </div>
           </div>
