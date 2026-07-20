@@ -30,7 +30,27 @@ export async function GET(req: NextRequest) {
     auctions = auctions.filter((a) => resolveAuctionStatus(a) === "live");
   }
 
-  auctions.sort((a, b) => new Date(a.end_at).getTime() - new Date(b.end_at).getTime());
+  if (isAdminAll) {
+    // Products admin: active first, ended last; newest registration first within group.
+    const rank = (a: (typeof auctions)[number]) => {
+      const s = resolveAuctionStatus(a);
+      if (s === "live") return 0;
+      if (s === "upcoming") return 1;
+      return 2;
+    };
+    auctions.sort((a, b) => {
+      const byStatus = rank(a) - rank(b);
+      if (byStatus !== 0) return byStatus;
+      const aCreated = new Date(a.created_at || 0).getTime();
+      const bCreated = new Date(b.created_at || 0).getTime();
+      if (bCreated !== aCreated) return bCreated - aCreated;
+      return b.id - a.id;
+    });
+  } else {
+    auctions.sort(
+      (a, b) => new Date(a.end_at).getTime() - new Date(b.end_at).getTime()
+    );
+  }
 
   const total = auctions.length;
   let page = 1;

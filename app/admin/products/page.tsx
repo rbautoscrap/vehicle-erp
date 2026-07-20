@@ -58,7 +58,8 @@ export default function AdminProductsPage() {
       <AdminNav />
       <div className="actions" style={{ justifyContent: "space-between", marginBottom: 16 }}>
         <p className="page-desc" style={{ margin: 0 }}>
-          등록된 잔존물을 관리합니다.
+          등록된 잔존물을 관리합니다. 진행·대기 건이 위에 보이고, 마감 건은 아래로
+          내려가며 최신 등록순으로 정렬됩니다.
         </p>
         <Link href="/admin/products/new" className="btn btn-primary">
           잔존물등록
