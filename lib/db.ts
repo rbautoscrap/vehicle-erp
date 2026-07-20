@@ -193,6 +193,8 @@ function normalizeAuction(raw: Partial<Auction> & { id: number }): Auction {
         Gasoline: "가솔린",
         Diesel: "디젤",
         Hybrid: "하이브리드",
+        "Hybrid(Electric+Gasoline)": "하이브리드(전기+가솔린)",
+        "Hybrid(Electric+Diesel)": "하이브리드(전기+디젤)",
         Electric: "전기",
         Other: "기타",
       };
