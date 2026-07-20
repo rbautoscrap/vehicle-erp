@@ -76,7 +76,7 @@ export default function SignupPage() {
         <p>After registration, an administrator must approve your account before you can sign in.</p>
 
         <div className="field">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">ID</label>
           <input
             id="username"
             value={form.username}
