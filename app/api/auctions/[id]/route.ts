@@ -146,6 +146,38 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   }
 
   const currentPhotos = existing.photos || [];
+  const photoOrderRaw = String(form.get("photo_order") || "").trim();
+  let orderedExisting: string[] | null = null;
+  if (photoOrderRaw && !replacePhotos) {
+    try {
+      const parsed = JSON.parse(photoOrderRaw);
+      if (!Array.isArray(parsed)) {
+        return NextResponse.json(
+          { error: "사진 순서 형식이 올바르지 않습니다." },
+          { status: 400 }
+        );
+      }
+      const wanted = parsed.map((p) => String(p));
+      const currentSet = new Set(currentPhotos);
+      if (
+        wanted.length !== currentPhotos.length ||
+        wanted.some((p) => !currentSet.has(p)) ||
+        new Set(wanted).size !== wanted.length
+      ) {
+        return NextResponse.json(
+          { error: "사진 순서가 기존 목록과 일치하지 않습니다." },
+          { status: 400 }
+        );
+      }
+      orderedExisting = wanted;
+    } catch {
+      return NextResponse.json(
+        { error: "사진 순서를 읽을 수 없습니다." },
+        { status: 400 }
+      );
+    }
+  }
+
   if (!replacePhotos && currentPhotos.length + photoFiles.length > MAX_PHOTOS) {
     return NextResponse.json(
       { error: `You can have up to ${MAX_PHOTOS} photos total.` },
@@ -196,8 +228,12 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
 
     if (replacePhotos) {
       auction.photos = newPhotoUrls;
-    } else if (newPhotoUrls.length > 0) {
-      auction.photos = [...(auction.photos || []), ...newPhotoUrls].slice(0, MAX_PHOTOS);
+    } else {
+      const base = orderedExisting ?? auction.photos ?? [];
+      auction.photos =
+        newPhotoUrls.length > 0
+          ? [...base, ...newPhotoUrls].slice(0, MAX_PHOTOS)
+          : base.slice(0, MAX_PHOTOS);
     }
 
     updated = auction;

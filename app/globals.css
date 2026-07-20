@@ -454,15 +454,22 @@ select {
   cursor: zoom-in;
 }
 
+.photo-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-  gap: 8px;
-  margin-top: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 0;
+  width: 100%;
 }
 
 .preview-grid {
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .photo-thumb {
@@ -474,6 +481,7 @@ select {
   padding: 0;
   background: #f0eee9;
   cursor: pointer;
+  min-width: 0;
 }
 
 .photo-thumb img {
@@ -483,9 +491,69 @@ select {
   display: block;
 }
 
-.photo-thumb.is-active {
+.photo-thumb.is-active,
+.photo-thumb.is-cover {
   outline: 2px solid var(--accent);
   border-color: var(--accent);
+}
+
+.photo-thumb-pick {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.photo-cover-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 2;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.photo-replace-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.photo-replace-toggle input {
+  width: auto;
+  margin: 0;
+}
+
+.photo-file-row {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #faf9f7;
+}
+
+.photo-file-row input[type="file"] {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .photo-main-btn {
@@ -495,6 +563,18 @@ select {
   border: none;
   background: transparent;
   cursor: zoom-in;
+}
+
+@media (max-width: 720px) {
+  .photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .list-thumb-btn {

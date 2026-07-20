@@ -40,7 +40,9 @@ export function AuctionForm({
     if (initialForm) return initialForm;
     return { ...emptyAuctionForm, ...defaultAuctionTimes() };
   });
-  const [existingPhotos] = useState<string[]>(() => initialPhotos ?? []);
+  const [existingPhotos, setExistingPhotos] = useState<string[]>(
+    () => initialPhotos ?? []
+  );
   const [replacePhotos, setReplacePhotos] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [error, setError] = useState("");
@@ -58,10 +60,27 @@ export function AuctionForm({
     };
   }, [previews]);
 
+  function setMainExisting(src: string) {
+    setExistingPhotos((prev) => [src, ...prev.filter((p) => p !== src)]);
+  }
+
+  function setMainNew(index: number) {
+    setPhotos((prev) => {
+      if (index <= 0 || index >= prev.length) return prev;
+      const next = [...prev];
+      const [picked] = next.splice(index, 1);
+      next.unshift(picked);
+      return next;
+    });
+  }
+
   function onPhotosChange(files: FileList | null) {
     if (!files) return;
     const baseCount = replacePhotos || mode === "create" ? 0 : existingPhotos.length;
-    const next = [...photos, ...Array.from(files)].slice(0, Math.max(0, MAX_PHOTOS - baseCount));
+    const next = [...photos, ...Array.from(files)].slice(
+      0,
+      Math.max(0, MAX_PHOTOS - baseCount)
+    );
     setPhotos(next);
     if (baseCount + photos.length + files.length > MAX_PHOTOS) {
       setError(`사진은 최대 ${MAX_PHOTOS}장까지 선택할 수 있습니다.`);
@@ -88,6 +107,9 @@ export function AuctionForm({
       body.set("end_at", new Date(form.end_at).toISOString());
       if (mode === "edit" && replacePhotos) {
         body.set("replace_photos", "1");
+      }
+      if (mode === "edit" && !replacePhotos && existingPhotos.length > 0) {
+        body.set("photo_order", JSON.stringify(existingPhotos));
       }
       photos.forEach((file) => body.append("photos", file));
 
@@ -195,25 +217,36 @@ export function AuctionForm({
         />
       </div>
 
-      <div className="field">
+      <div className="field photo-editor">
         <label htmlFor="photos">
           사진 ({(replacePhotos ? 0 : existingPhotos.length) + photos.length}/
           {MAX_PHOTOS})
         </label>
+        <p className="field-hint" style={{ marginTop: 0 }}>
+          사진을 클릭하면 <strong>대표(메인) 이미지</strong>로 지정됩니다. 목록·미리보기에
+          맨 앞 사진이 표시됩니다.
+        </p>
+
         {mode === "edit" && existingPhotos.length > 0 && !replacePhotos && (
-          <div className="photo-grid preview-grid">
-            {existingPhotos.map((src) => (
-              <div key={src} className="photo-thumb">
+          <div className="photo-grid preview-grid" role="list">
+            {existingPhotos.map((src, i) => (
+              <button
+                key={src}
+                type="button"
+                role="listitem"
+                className={`photo-thumb${i === 0 ? " is-cover" : ""}`}
+                onClick={() => setMainExisting(src)}
+                title={i === 0 ? "대표 이미지" : "대표로 지정"}
+              >
                 <img src={src} alt="" />
-              </div>
+                {i === 0 && <span className="photo-cover-badge">대표</span>}
+              </button>
             ))}
           </div>
         )}
+
         {mode === "edit" && (
-          <label
-            className="field-hint"
-            style={{ display: "flex", gap: 8, alignItems: "center" }}
-          >
+          <label className="photo-replace-toggle">
             <input
               type="checkbox"
               checked={replacePhotos}
@@ -222,28 +255,46 @@ export function AuctionForm({
                 setPhotos([]);
               }}
             />
-            기존 사진을 모두 새 업로드로 교체
+            <span>기존 사진을 모두 새 업로드로 교체</span>
           </label>
         )}
-        <input
-          id="photos"
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          multiple
-          onChange={(e) => {
-            onPhotosChange(e.target.files);
-            e.target.value = "";
-          }}
-        />
+
+        <div className="photo-file-row">
+          <input
+            id="photos"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
+            onChange={(e) => {
+              onPhotosChange(e.target.files);
+              e.target.value = "";
+            }}
+          />
+        </div>
+
         {previews.length > 0 && (
-          <div className="photo-grid preview-grid">
+          <div className="photo-grid preview-grid" role="list">
             {previews.map((p, i) => (
-              <div key={p.url} className="photo-thumb">
-                <img src={p.url} alt={p.name} />
+              <div
+                key={p.url}
+                role="listitem"
+                className={`photo-thumb${i === 0 ? " is-cover" : ""}`}
+              >
+                <button
+                  type="button"
+                  className="photo-thumb-pick"
+                  onClick={() => setMainNew(i)}
+                  title={i === 0 ? "대표 이미지" : "대표로 지정"}
+                >
+                  <img src={p.url} alt={p.name} />
+                  {i === 0 && <span className="photo-cover-badge">대표</span>}
+                </button>
                 <button
                   type="button"
                   className="photo-remove"
-                  onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                  onClick={() =>
+                    setPhotos((prev) => prev.filter((_, idx) => idx !== i))
+                  }
                   aria-label="사진 제거"
                 >
                   ×
