@@ -27,7 +27,8 @@ export async function createSession(user: SessionUser) {
     company: user.company,
   })
     .setProtectedHeader({ alg: "HS256" })
-    .setExpirationTime("7d")
+    // Short JWT lifetime; cookie itself is a browser session cookie (no maxAge).
+    .setExpirationTime("12h")
     .sign(secret());
 
   const jar = await cookies();
@@ -35,7 +36,8 @@ export async function createSession(user: SessionUser) {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    // Omit maxAge/expires so the cookie is cleared when the browser is closed.
+    secure: process.env.NODE_ENV === "production",
   });
 }
 
