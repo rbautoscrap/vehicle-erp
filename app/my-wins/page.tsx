@@ -82,7 +82,8 @@ export default function MyWinsPage() {
   return (
     <AppShell title="My winning bids">
       <p className="page-desc">
-        Vehicles you won after an administrator confirmed the auction result.
+        Vehicles appear here only after an administrator confirms the winning
+        result. Pending auctions stay hidden until confirmation.
       </p>
 
       {downloadError && <p className="error">{downloadError}</p>}
