@@ -61,17 +61,11 @@ export default function AdminProductsPage() {
           등록된 잔존물을 관리합니다. 진행·대기 건이 위에 보이고, 마감 건은 아래로
           내려가며 최신 등록순으로 정렬됩니다.
         </p>
-        <Link href="/admin/products/new" className="btn btn-primary">
-          잔존물등록
-        </Link>
       </div>
 
       {auctions.length === 0 ? (
         <div className="empty">
-          등록된 잔존물이 없습니다.{" "}
-          <Link href="/admin/products/new" style={{ color: "var(--accent)" }}>
-            잔존물등록
-          </Link>
+          등록된 잔존물이 없습니다.
         </div>
       ) : (
         <div className="stack">
