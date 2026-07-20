@@ -797,7 +797,7 @@ select {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 360px);
   gap: clamp(28px, 5vw, 64px);
-  align-items: center;
+  align-items: start;
 }
 
 .login-hero-copy {
@@ -837,6 +837,133 @@ select {
   color: var(--login-muted);
   text-wrap: pretty;
   animation: login-hero-rise 0.85s ease-out 0.12s both;
+}
+
+.login-live {
+  margin-top: 28px;
+  max-width: 34rem;
+  animation: login-hero-rise 0.9s ease-out 0.18s both;
+}
+
+.login-live-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.login-live-head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--login-brand);
+}
+
+.login-live-count {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: #1f7a45;
+}
+
+.login-live-note {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  color: var(--login-muted);
+}
+
+.login-live-empty {
+  margin: 0;
+  padding: 14px 0;
+  font-size: 0.88rem;
+  color: var(--login-muted);
+}
+
+.login-live-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--login-line);
+}
+
+.login-live-item {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--login-line);
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.login-live-item:hover {
+  background: rgba(18, 50, 95, 0.03);
+}
+
+.login-live-thumb {
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e8ecf2;
+  display: block;
+}
+
+.login-live-thumb-empty {
+  display: grid;
+  place-items: center;
+  color: var(--login-muted);
+  font-size: 0.85rem;
+}
+
+.login-live-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.login-live-text strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--login-ink);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.login-live-meta {
+  font-size: 0.78rem;
+  color: var(--login-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.login-live-ends {
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--login-brand);
+}
+
+.login-gate-hint {
+  margin: 0 0 12px !important;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #eef4fb;
+  color: var(--accent) !important;
+  font-size: 0.86rem !important;
+  font-weight: 600;
 }
 
 .login-hero-panel {
@@ -936,6 +1063,7 @@ select {
   .login-hero-copy,
   .login-hero-title,
   .login-hero-lead,
+  .login-live,
   .login-hero-panel {
     animation: none;
   }
