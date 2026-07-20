@@ -1,0 +1,10 @@
+node_modules
+.next
+.server.lock
+data
+public/uploads
+*.db
+.env*.local
+*.tsbuildinfo
+build-diagnose.log
+dev-diagnose.log
