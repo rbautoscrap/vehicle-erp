@@ -88,6 +88,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   const auctionId = Number(id);
   const body = await req.json();
 
+  const reopen = body.reopen === true;
   const resultStatusRaw = body.result_status;
   const resultMemo = body.result_memo != null ? String(body.result_memo) : undefined;
   const notes = body.notes != null ? String(body.notes) : undefined;
@@ -123,9 +124,14 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     );
   }
 
-  const outcome: { error: string | null; auctionId: number | null } = {
+  const outcome: {
+    error: string | null;
+    auctionId: number | null;
+    reopened: boolean;
+  } = {
     error: null,
     auctionId: null,
+    reopened: false,
   };
 
   writeStore((store) => {
@@ -136,6 +142,35 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
     }
     if (resolveAuctionStatus(auction) !== "ended") {
       outcome.error = "종료된 경매만 결과를 수정할 수 있습니다.";
+      return;
+    }
+
+    if (reopen) {
+      const end = endAt
+        ? new Date(endAt)
+        : new Date(Date.now() + 24 * 60 * 60 * 1000);
+      if (Number.isNaN(end.getTime())) {
+        outcome.error = "종료 시간이 올바르지 않습니다.";
+        return;
+      }
+      if (end.getTime() <= Date.now()) {
+        outcome.error = "경매 재개 시 종료 시간은 현재보다 이후여야 합니다.";
+        return;
+      }
+      if (end <= new Date(auction.start_at)) {
+        outcome.error = "종료 시간은 시작 시간보다 이후여야 합니다.";
+        return;
+      }
+      // Ensure bidding can start immediately if start was somehow in the future
+      if (new Date(auction.start_at).getTime() > Date.now()) {
+        auction.start_at = new Date().toISOString();
+      }
+      auction.end_at = end.toISOString();
+      auction.closed_at = null;
+      auction.winner_bid_id = null;
+      auction.result_status = "pending";
+      outcome.reopened = true;
+      outcome.auctionId = auction.id;
       return;
     }
 
@@ -189,6 +224,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
         auction.closed_at = null;
         auction.winner_bid_id = null;
         auction.result_status = "pending";
+        outcome.reopened = true;
       }
     }
 
@@ -207,5 +243,9 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
   return NextResponse.json({
     auction: meta,
     winner: winnerPayload(auction.id, store),
+    reopened: outcome.reopened,
+    message: outcome.reopened
+      ? "경매를 다시 진행 중으로 되돌렸습니다."
+      : undefined,
   });
 }

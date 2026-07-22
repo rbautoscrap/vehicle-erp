@@ -128,8 +128,58 @@ export default function AdminResultDetailPage() {
         setError(data.error || "저장에 실패했습니다.");
         return;
       }
+      if (data.reopened) {
+        setMessage("경매를 다시 진행 중으로 되돌렸습니다.");
+        router.push("/admin/live");
+        return;
+      }
       setMessage("결과가 저장되었습니다.");
       await load();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function onReopen() {
+    const label =
+      detail?.auction.title ||
+      `${detail?.auction.year || ""} ${detail?.auction.vehicle_type || ""}`.trim();
+    const chosenEnd = endAt ? new Date(endAt) : null;
+    const useFormEnd =
+      chosenEnd &&
+      !Number.isNaN(chosenEnd.getTime()) &&
+      chosenEnd.getTime() > Date.now();
+    const newEnd = useFormEnd
+      ? chosenEnd!
+      : new Date(Date.now() + 24 * 60 * 60 * 1000);
+    if (
+      !window.confirm(
+        `「${label}」을(를) 다시 경매 진행 중으로 되돌릴까요?\n\n낙찰·유찰 결과는 초기화되고, 확정된 My wins에서도 사라집니다.\n종료 시간: ${formatDateTime(newEnd.toISOString())}`
+      )
+    ) {
+      return;
+    }
+    setError("");
+    setMessage("");
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/admin/results/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reopen: true,
+          end_at: newEnd.toISOString(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "경매 재개에 실패했습니다.");
+        return;
+      }
+      setMessage("경매를 다시 진행 중으로 되돌렸습니다.");
+      router.push("/admin/live");
+    } catch {
+      setError("서버에 연결하지 못했습니다.");
     } finally {
       setSaving(false);
     }
@@ -177,6 +227,14 @@ export default function AdminResultDetailPage() {
         <Link href={`/admin/products/${a.id}/edit`} className="btn">
           잔존물 편집
         </Link>
+        <button
+          type="button"
+          className="btn"
+          disabled={saving}
+          onClick={() => void onReopen()}
+        >
+          {saving ? "처리 중…" : "경매 재개"}
+        </button>
       </div>
 
       <div className="auction-row" style={{ marginBottom: 20 }}>

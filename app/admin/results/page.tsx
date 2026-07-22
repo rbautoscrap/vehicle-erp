@@ -76,7 +76,7 @@ export default function AdminResultsPage() {
 
   async function patchResult(
     id: number,
-    body: { result_status: "confirmed" | "unsold" },
+    body: { result_status?: "confirmed" | "unsold"; reopen?: boolean },
     okMessage: string
   ) {
     setError("");
@@ -137,6 +137,24 @@ export default function AdminResultsPage() {
     void patchResult(a.id, { result_status: "unsold" }, "유찰로 처리되었습니다.");
   }
 
+  function reopenAuction(row: ResultRow) {
+    const a = row.auction;
+    const label = a.title || `${a.year} ${a.vehicle_type}`.trim();
+    const newEnd = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    if (
+      !window.confirm(
+        `「${label}」을(를) 다시 경매 진행 중으로 되돌릴까요?\n\n낙찰·유찰 결과는 초기화되고, 확정된 My wins에서도 사라집니다.\n종료 시간은 ${formatDateTime(newEnd.toISOString())}(24시간 후)로 설정됩니다.\n이후 잔존물 편집에서 시간을 변경할 수 있습니다.`
+      )
+    ) {
+      return;
+    }
+    void patchResult(
+      a.id,
+      { reopen: true },
+      "경매를 다시 진행 중으로 되돌렸습니다. 진행 중 경매 목록에서 확인하세요."
+    );
+  }
+
   if (loading || !user || user.role !== "admin") {
     return (
       <div className="app-shell">
@@ -151,7 +169,8 @@ export default function AdminResultsPage() {
       <p className="page-desc">
         종료된 경매의 낙찰자·금액을 확인한 뒤 <strong>낙찰 결과 확정</strong>을
         눌러 주세요. 확정 전까지 회원은 결과를 볼 수 없으며, 확정 후 낙찰자의 My
-        wins에 매물이 표시됩니다.
+        wins에 매물이 표시됩니다. 유찰·확정 후에도 <strong>경매 재개</strong>로
+        다시 진행 중 상태로 되돌릴 수 있습니다.
       </p>
 
       {error && <p className="error">{error}</p>}
@@ -256,6 +275,14 @@ export default function AdminResultsPage() {
                       유찰 처리
                     </button>
                   )}
+                  <button
+                    type="button"
+                    className="btn"
+                    disabled={busy}
+                    onClick={() => reopenAuction(row)}
+                  >
+                    {busy ? "처리 중…" : "경매 재개"}
+                  </button>
                   <Link
                     href={`/admin/results/${a.id}`}
                     className={`btn${pending && winner ? "" : " btn-primary"}`}
