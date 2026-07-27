@@ -2201,8 +2201,8 @@ select {
 
 /* Transaction statement */
 .ts-section-title {
-  margin: 20px 0 10px;
-  font-size: 1.05rem;
+  margin: 16px 0 8px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--ink);
 }
@@ -2219,21 +2219,86 @@ select {
 }
 
 .ts-items {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   margin-bottom: 10px;
-}
-
-.ts-item-row {
-  display: grid;
-  grid-template-columns: 1.4fr 1.4fr 0.5fr 0.7fr auto;
-  gap: 8px;
-  align-items: end;
-  padding: 12px;
-  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.ts-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ts-items-table th,
+.ts-items-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.ts-items-table th {
+  background: #f3f1ec;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ts-items-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ts-items-table input {
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.ts-items-table input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ts-col-qty {
+  width: 72px;
+}
+
+.ts-col-amount {
+  width: 120px;
+}
+
+.ts-col-action {
+  width: 44px;
+  text-align: center;
+}
+
+.ts-items-table .ts-col-qty input,
+.ts-items-table .ts-col-amount input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-item-remove {
+  min-width: 32px;
+  padding: 4px 8px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.ts-items-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 8px;
 }
 
 .ts-account-add {
@@ -2242,6 +2307,18 @@ select {
   background: #f3f1ec;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .ts-preview-wrap {
@@ -2544,12 +2621,12 @@ select {
     position: static;
   }
 
-  .ts-item-row {
-    grid-template-columns: 1fr 1fr;
+  .ts-items {
+    overflow-x: auto;
   }
 
-  .ts-item-row .btn {
-    grid-column: 1 / -1;
+  .ts-items-table {
+    min-width: 520px;
   }
 }
 

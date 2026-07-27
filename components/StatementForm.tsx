@@ -76,7 +76,7 @@ function defaultValues(
   }
   return {
     issued_at: toDateInputValue(new Date().toISOString()),
-    currency: "EUR",
+    currency: "KRW",
     supplier: { ...DEFAULT_SUPPLIER },
     recipient: {
       name: "",
@@ -224,11 +224,15 @@ export function StatementForm({
                 }))
               }
             >
-              {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.label}
-                </option>
-              ))}
+              {[...CURRENCIES]
+                .sort((a, b) =>
+                  a.code === "KRW" ? -1 : b.code === "KRW" ? 1 : 0
+                )
+                .map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.label}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -260,7 +264,6 @@ export function StatementForm({
               readOnly
               disabled
             />
-            <p className="field-hint">대표번호는 고정입니다.</p>
           </div>
           <div className="field">
             <label htmlFor="supplier_contact_person">담당 프로</label>
@@ -351,67 +354,92 @@ export function StatementForm({
 
         <h2 className="ts-section-title">품목</h2>
         <div className="ts-items">
-          {values.items.map((item, idx) => (
-            <div key={item.id} className="ts-item-row">
-              <div className="field">
-                <label>품목 {idx + 1}</label>
-                <input
-                  value={item.name}
-                  onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                  placeholder="차량명 / 항목명"
-                  required
-                />
-              </div>
-              <div className="field">
-                <label>상세</label>
-                <input
-                  value={item.details}
-                  onChange={(e) =>
-                    updateItem(item.id, { details: e.target.value })
-                  }
-                  placeholder="차대번호, VIN 등"
-                />
-              </div>
-              <div className="field ts-item-qty">
-                <label>수량</label>
-                <input
-                  type="number"
-                  min={1}
-                  step={1}
-                  value={item.quantity}
-                  onChange={(e) =>
-                    updateItem(item.id, {
-                      quantity: Math.max(1, Number(e.target.value) || 1),
-                    })
-                  }
-                />
-              </div>
-              <div className="field ts-item-amount">
-                <label>단가 ({values.currency})</label>
-                <input
-                  type="number"
-                  min={0}
-                  step={values.currency === "KRW" ? 1 : 0.01}
-                  value={item.amount}
-                  onChange={(e) =>
-                    updateItem(item.id, {
-                      amount: Number(e.target.value) || 0,
-                    })
-                  }
-                />
-              </div>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => removeItem(item.id)}
-                disabled={values.items.length <= 1}
-              >
-                삭제
-              </button>
-            </div>
-          ))}
+          <table className="ts-items-table">
+            <thead>
+              <tr>
+                <th scope="col">품목</th>
+                <th scope="col">상세</th>
+                <th scope="col" className="ts-col-qty">
+                  수량
+                </th>
+                <th scope="col" className="ts-col-amount">
+                  단가
+                </th>
+                <th scope="col" className="ts-col-action">
+                  <span className="sr-only">삭제</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {values.items.map((item, idx) => (
+                <tr key={item.id}>
+                  <td>
+                    <input
+                      aria-label={`품목 ${idx + 1}`}
+                      value={item.name}
+                      onChange={(e) =>
+                        updateItem(item.id, { name: e.target.value })
+                      }
+                      placeholder="차량명 / 항목명"
+                      required
+                    />
+                  </td>
+                  <td>
+                    <input
+                      aria-label={`상세 ${idx + 1}`}
+                      value={item.details}
+                      onChange={(e) =>
+                        updateItem(item.id, { details: e.target.value })
+                      }
+                      placeholder="차대번호, VIN 등"
+                    />
+                  </td>
+                  <td className="ts-col-qty">
+                    <input
+                      aria-label={`수량 ${idx + 1}`}
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={item.quantity}
+                      onChange={(e) =>
+                        updateItem(item.id, {
+                          quantity: Math.max(1, Number(e.target.value) || 1),
+                        })
+                      }
+                    />
+                  </td>
+                  <td className="ts-col-amount">
+                    <input
+                      aria-label={`단가 ${idx + 1}`}
+                      type="number"
+                      min={0}
+                      step={values.currency === "KRW" ? 1 : 0.01}
+                      value={item.amount || ""}
+                      onChange={(e) =>
+                        updateItem(item.id, {
+                          amount: Number(e.target.value) || 0,
+                        })
+                      }
+                      placeholder="0"
+                    />
+                  </td>
+                  <td className="ts-col-action">
+                    <button
+                      type="button"
+                      className="btn btn-ghost ts-item-remove"
+                      onClick={() => removeItem(item.id)}
+                      disabled={values.items.length <= 1}
+                      aria-label={`품목 ${idx + 1} 삭제`}
+                    >
+                      ×
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="actions" style={{ marginBottom: 8 }}>
+        <div className="ts-items-footer">
           <button type="button" className="btn" onClick={addItem}>
             품목 추가
           </button>
@@ -451,9 +479,6 @@ export function StatementForm({
         </div>
 
         <div className="ts-account-add">
-          <p className="field-hint" style={{ marginTop: 0 }}>
-            새 계좌를 추가하면 위 목록에서 바로 선택할 수 있습니다.
-          </p>
           <div className="field-row-3">
             <div className="field">
               <label htmlFor="new_bank">은행</label>
@@ -512,7 +537,7 @@ export function StatementForm({
           <label htmlFor="note">하단 안내 문구</label>
           <textarea
             id="note"
-            rows={2}
+            rows={5}
             value={values.note}
             onChange={(e) => setValues((v) => ({ ...v, note: e.target.value }))}
             placeholder="비우면 기본 입고·이동 안내 문구가 표시됩니다."

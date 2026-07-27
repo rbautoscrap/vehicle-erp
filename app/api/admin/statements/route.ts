@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   if (session instanceof NextResponse) return session;
 
   const body = await req.json().catch(() => ({}));
-  const currency = isBidCurrency(body.currency) ? body.currency : "EUR";
+  const currency = isBidCurrency(body.currency) ? body.currency : "KRW";
   const items = parseItems(body.items);
   const recipient = normalizeParty(body.recipient);
   const supplier = normalizeParty(body.supplier || DEFAULT_SUPPLIER);

@@ -132,7 +132,7 @@ export function normalizeStatementItem(
 export function normalizeStatement(
   raw: Partial<TransactionStatement> & { id: number }
 ): TransactionStatement {
-  const currency: BidCurrency = isBidCurrency(raw.currency) ? raw.currency : "EUR";
+  const currency: BidCurrency = isBidCurrency(raw.currency) ? raw.currency : "KRW";
   const bankId = Number(raw.bank_account_id);
   return {
     id: raw.id,
