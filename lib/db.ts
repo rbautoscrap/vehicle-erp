@@ -8,6 +8,13 @@ import {
   type FxRates,
 } from "@/lib/currency";
 import { normalizeSaleType } from "@/lib/saleTypes";
+import {
+  DEFAULT_BANK_ACCOUNTS,
+  normalizeBankAccount,
+  normalizeStatement,
+  type BankAccount,
+  type TransactionStatement,
+} from "@/lib/statements";
 import { toServablePhotoUrl } from "@/lib/uploads";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -124,9 +131,16 @@ type Store = {
   auctions: Auction[];
   bids: Bid[];
   fx_rates: FxRates;
+  bank_accounts: BankAccount[];
+  statements: TransactionStatement[];
   nextUserId: number;
   nextAuctionId: number;
   nextBidId: number;
+  nextBankAccountId: number;
+  nextStatementId: number;
+  /** Daily sequence seed for TS-YYYYMMDD-#### numbers */
+  nextStatementSeq: number;
+  statementSeqDate: string;
 };
 
 function defaultStore(): Store {
@@ -150,9 +164,21 @@ function defaultStore(): Store {
     auctions: [],
     bids: [],
     fx_rates: normalizeFxRates(null),
+    bank_accounts: DEFAULT_BANK_ACCOUNTS.map((a, i) =>
+      normalizeBankAccount({
+        ...a,
+        id: i + 1,
+        created_at: now,
+      })
+    ),
+    statements: [],
     nextUserId: 2,
     nextAuctionId: 1,
     nextBidId: 1,
+    nextBankAccountId: DEFAULT_BANK_ACCOUNTS.length + 1,
+    nextStatementId: 1,
+    nextStatementSeq: 1,
+    statementSeqDate: "",
   };
 }
 
@@ -263,9 +289,39 @@ function ensureStore(): Store {
   parsed.fx_rates = normalizeFxRates(
     (parsed as Store & { fx_rates?: Partial<FxRates> }).fx_rates
   );
+  let needsSave = false;
+  parsed.bank_accounts = Array.isArray(parsed.bank_accounts)
+    ? parsed.bank_accounts.map((a) =>
+        normalizeBankAccount(a as Partial<BankAccount> & { id: number })
+      )
+    : [];
+  if (parsed.bank_accounts.length === 0) {
+    const now = new Date().toISOString();
+    parsed.bank_accounts = DEFAULT_BANK_ACCOUNTS.map((a, i) =>
+      normalizeBankAccount({
+        ...a,
+        id: i + 1,
+        created_at: now,
+      })
+    );
+    needsSave = true;
+  }
+  parsed.statements = Array.isArray(parsed.statements)
+    ? parsed.statements.map((s) =>
+        normalizeStatement(s as Partial<TransactionStatement> & { id: number })
+      )
+    : [];
   parsed.nextUserId = Number(parsed.nextUserId) || parsed.users.length + 1;
   parsed.nextAuctionId = Number(parsed.nextAuctionId) || 1;
   parsed.nextBidId = Number(parsed.nextBidId) || 1;
+  parsed.nextBankAccountId =
+    Number(parsed.nextBankAccountId) ||
+    Math.max(0, ...parsed.bank_accounts.map((a) => a.id)) + 1;
+  parsed.nextStatementId =
+    Number(parsed.nextStatementId) ||
+    Math.max(0, ...parsed.statements.map((s) => s.id)) + 1;
+  parsed.nextStatementSeq = Number(parsed.nextStatementSeq) || 1;
+  parsed.statementSeqDate = String(parsed.statementSeqDate || "");
 
   if (!parsed.users.some((u) => u.role === "admin")) {
     parsed.users.push({
@@ -281,6 +337,10 @@ function ensureStore(): Store {
       company: "KOREA AUTO AUTION",
       created_at: new Date().toISOString(),
     });
+    needsSave = true;
+  }
+
+  if (needsSave) {
     saveStore(parsed);
   }
 
@@ -416,3 +476,20 @@ export function getWinningBid(auctionId: number, store = readStore()) {
   }
   return highestBid(bids);
 }
+
+/** Allocate next TS-YYYYMMDD-#### number (mutates store counters). */
+export function allocateStatementNumber(
+  store: Store,
+  issuedAt = new Date()
+): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const day = `${issuedAt.getFullYear()}${pad(issuedAt.getMonth() + 1)}${pad(issuedAt.getDate())}`;
+  if (store.statementSeqDate !== day) {
+    store.statementSeqDate = day;
+    store.nextStatementSeq = 1;
+  }
+  const seq = store.nextStatementSeq++;
+  return `TS-${day}-${String(seq).padStart(4, "0")}`;
+}
+
+export type { BankAccount, TransactionStatement };

@@ -29,6 +29,9 @@ export function AdminNav() {
                 !pathname.startsWith("/admin/products/new"))
             : link.href === "/admin/products/new"
               ? pathname === "/admin/products/new"
+              : link.href === "/admin/statements"
+                ? pathname === "/admin/statements" ||
+                  pathname.startsWith("/admin/statements/")
               : link.exact
                 ? pathname === link.href
                 : pathname === link.href || pathname.startsWith(link.href + "/");
