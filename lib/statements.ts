@@ -131,6 +131,37 @@ export function statementSupplyTotal(items: StatementItem[]): number {
   }, 0);
 }
 
+/** Default VAT rate (10%). */
+export const STATEMENT_VAT_RATE = 0.1;
+
+export function statementVatAmount(
+  items: StatementItem[],
+  currency: BidCurrency
+): number {
+  return roundMoney(statementSupplyTotal(items) * STATEMENT_VAT_RATE, currency);
+}
+
+export function statementGrandTotal(
+  items: StatementItem[],
+  currency: BidCurrency
+): number {
+  const supply = roundMoney(statementSupplyTotal(items), currency);
+  return roundMoney(supply + statementVatAmount(items, currency), currency);
+}
+
+export const DEFAULT_STATEMENT_NOTE = `이동전 보관소 측과 소통 후 진행 부탁드립니다.
+
+이동 부탁드립니다.
+서류는 알비오토 진행입니다
+
+※ 차량 입고 후
+1.차량 앞,뒤사진
+2.등록증사진
+3.계기판사진
+4.번호판폐기사진 (번호판 2개 중 하나라도 없을 시 차대번호 사진)
+5. 입고 날짜(예:1/23 입고)
+-카카오톡 발송 바랍니다.`;
+
 /** Round money for display/storage by currency decimals. */
 export function roundMoney(amount: number, currency: BidCurrency): number {
   if (!Number.isFinite(amount)) return 0;

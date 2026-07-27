@@ -10,7 +10,7 @@ import {
   bankAccountLabel,
   formatStatementDate,
   formatStatementMoney,
-  statementSupplyTotal,
+  statementGrandTotal,
 } from "@/lib/statements";
 
 export default function AdminStatementsPage() {
@@ -254,7 +254,7 @@ export default function AdminStatementsPage() {
           {statements.map((s) => {
             const account =
               accounts.find((a) => a.id === s.bank_account_id) || null;
-            const total = statementSupplyTotal(s.items);
+            const total = statementGrandTotal(s.items, s.currency);
             const busy = busyId === s.id;
             return (
               <div key={s.id} className="auction-row">

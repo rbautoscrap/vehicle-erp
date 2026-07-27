@@ -10,12 +10,15 @@ import type {
   TransactionStatement,
 } from "@/lib/statements";
 import {
+  DEFAULT_STATEMENT_NOTE,
   DEFAULT_SUPPLIER,
   bankAccountLabel,
   dateInputToIso,
   formatStatementMoney,
   newStatementItem,
+  statementGrandTotal,
   statementSupplyTotal,
+  statementVatAmount,
   toDateInputValue,
 } from "@/lib/statements";
 import { StatementDocument } from "@/components/StatementDocument";
@@ -57,7 +60,7 @@ function defaultValues(
           ? initial.items.map((i) => ({ ...i }))
           : [newStatementItem(0)],
       bank_account_id: initial.bank_account_id ?? defAccount?.id ?? null,
-      note: initial.note || "",
+      note: initial.note || DEFAULT_STATEMENT_NOTE,
     };
   }
   return {
@@ -73,7 +76,7 @@ function defaultValues(
     },
     items: [newStatementItem(0)],
     bank_account_id: defAccount?.id ?? null,
-    note: "",
+    note: DEFAULT_STATEMENT_NOTE,
   };
 }
 
@@ -117,6 +120,8 @@ export function StatementForm({
   );
 
   const supply = statementSupplyTotal(values.items);
+  const vat = statementVatAmount(values.items, values.currency);
+  const grandTotal = statementGrandTotal(values.items, values.currency);
 
   function updateItem(id: string, patch: Partial<StatementItem>) {
     setValues((v) => ({
@@ -383,8 +388,9 @@ export function StatementForm({
             품목 추가
           </button>
           <span className="field-hint" style={{ margin: 0 }}>
-            공급가액 합계 {formatStatementMoney(supply, values.currency)} ·
-            부가세(영세율) 0
+            공급가액 {formatStatementMoney(supply, values.currency)} · 부가세
+            (10%) {formatStatementMoney(vat, values.currency)} · 합계{" "}
+            {formatStatementMoney(grandTotal, values.currency)}
           </span>
         </div>
 
@@ -481,7 +487,7 @@ export function StatementForm({
             rows={2}
             value={values.note}
             onChange={(e) => setValues((v) => ({ ...v, note: e.target.value }))}
-            placeholder="비우면 기본 영세율 안내 문구가 표시됩니다."
+            placeholder="비우면 기본 입고·이동 안내 문구가 표시됩니다."
           />
         </div>
 

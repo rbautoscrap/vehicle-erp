@@ -2473,7 +2473,8 @@ select {
 .ts-doc-footer {
   font-size: 0.8rem;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.55;
+  white-space: pre-line;
 }
 
 @media (max-width: 980px) {

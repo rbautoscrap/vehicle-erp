@@ -2,10 +2,13 @@
 
 import type { BankAccount, TransactionStatement } from "@/lib/statements";
 import {
+  DEFAULT_STATEMENT_NOTE,
   bankAccountLabel,
   formatStatementDate,
   formatStatementMoney,
+  statementGrandTotal,
   statementSupplyTotal,
+  statementVatAmount,
 } from "@/lib/statements";
 
 type Props = {
@@ -14,10 +17,11 @@ type Props = {
 };
 
 export function StatementDocument({ statement, account }: Props) {
-  const supply = statementSupplyTotal(statement.items);
-  const vat = 0;
-  const total = supply + vat;
   const currency = statement.currency;
+  const supply = statementSupplyTotal(statement.items);
+  const vat = statementVatAmount(statement.items, currency);
+  const total = statementGrandTotal(statement.items, currency);
+  const footerNote = (statement.note || "").trim() || DEFAULT_STATEMENT_NOTE;
 
   return (
     <article className="ts-doc" aria-label="거래명세서">
@@ -126,10 +130,7 @@ export function StatementDocument({ statement, account }: Props) {
               <td className="ts-muted">{item.details || "—"}</td>
               <td className="ts-num">{item.quantity}</td>
               <td className="ts-num">
-                {formatStatementMoney(
-                  item.amount * item.quantity,
-                  currency
-                )}
+                {formatStatementMoney(item.amount * item.quantity, currency)}
               </td>
             </tr>
           ))}
@@ -142,7 +143,7 @@ export function StatementDocument({ statement, account }: Props) {
           <strong>{formatStatementMoney(supply, currency)}</strong>
         </div>
         <div>
-          <span>부가세 (영세율)</span>
+          <span>부가세 (10%)</span>
           <strong>{formatStatementMoney(vat, currency)}</strong>
         </div>
         <div className="ts-doc-total-sum">
@@ -176,10 +177,7 @@ export function StatementDocument({ statement, account }: Props) {
         )}
       </section>
 
-      <footer className="ts-doc-footer">
-        {statement.note ||
-          "본 명세서는 영세율(부가세 0%) 거래로 작성되었습니다. 상기 내용이 정확함을 확인합니다."}
-      </footer>
+      <footer className="ts-doc-footer">{footerNote}</footer>
     </article>
   );
 }
