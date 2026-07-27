@@ -94,17 +94,6 @@ export function StatementToolbar({
       </button>
       <button
         type="button"
-        className={`ts-tool-btn${locale === "en" ? " is-active" : ""}`}
-        title="English version"
-        aria-label="English version"
-        aria-pressed={locale === "en"}
-        onClick={() => onLocaleChange("en")}
-      >
-        <span className="ts-tool-badge">EN</span>
-        <span>영문</span>
-      </button>
-      <button
-        type="button"
         className="ts-tool-btn"
         title="출력용 인쇄"
         aria-label="출력용 인쇄"
@@ -123,6 +112,17 @@ export function StatementToolbar({
       >
         <span className="ts-tool-badge">한</span>
         <span>한글</span>
+      </button>
+      <button
+        type="button"
+        className={`ts-tool-btn${locale === "en" ? " is-active" : ""}`}
+        title="English version"
+        aria-label="English version"
+        aria-pressed={locale === "en"}
+        onClick={() => onLocaleChange("en")}
+      >
+        <span className="ts-tool-badge">EN</span>
+        <span>영문</span>
       </button>
     </div>
   );
