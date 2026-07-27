@@ -33,7 +33,7 @@ export default function AdminHomePage() {
       </p>
 
       <div className="admin-cards">
-        <Link href="/admin/products/new" className="admin-card admin-card-primary">
+        <Link href="/admin/products/new" className="admin-card">
           <strong>잔존물등록</strong>
           <span>차량 정보·사진·일정을 입력해 경매를 등록합니다.</span>
         </Link>
@@ -65,7 +65,7 @@ export default function AdminHomePage() {
           <strong>거래명세서</strong>
           <span>거래명세서를 작성하고 조회·관리합니다.</span>
         </Link>
-        <Link href="/admin/backup" className="admin-card admin-card-primary">
+        <Link href="/admin/backup" className="admin-card">
           <strong>백업 / 복원</strong>
           <span>재배포 전 ZIP 백업, 배포 후 한 번에 복원합니다.</span>
         </Link>
