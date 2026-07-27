@@ -61,6 +61,10 @@ export default function AdminHomePage() {
           <strong>환율</strong>
           <span>미화·유로화 → 원화 환산 환율을 수정합니다.</span>
         </Link>
+        <Link href="/admin/statements" className="admin-card">
+          <strong>거래명세서</strong>
+          <span>거래명세서를 작성하고 조회·관리합니다.</span>
+        </Link>
         <Link href="/admin/backup" className="admin-card admin-card-primary">
           <strong>백업 / 복원</strong>
           <span>재배포 전 ZIP 백업, 배포 후 한 번에 복원합니다.</span>

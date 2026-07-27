@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/admin/products/new", label: "잔존물등록" },
   { href: "/admin/users", label: "회원 관리" },
   { href: "/admin/analytics", label: "회원 분석" },
+  { href: "/admin/statements", label: "거래명세서" },
   { href: "/admin/backup", label: "백업/복원" },
 ];
 
