@@ -114,27 +114,22 @@ export function StatementDocument({
                 <dd>{statement.recipient.company}</dd>
               </div>
             )}
+            {statement.recipient.contact_person && (
+              <div>
+                <dt>{t.managerName}</dt>
+                <dd>{statement.recipient.contact_person}</dd>
+              </div>
+            )}
+            {statement.recipient.contact_phone && (
+              <div>
+                <dt>{t.contact}</dt>
+                <dd>{statement.recipient.contact_phone}</dd>
+              </div>
+            )}
             {statement.recipient.address && (
               <div>
                 <dt>{t.address}</dt>
                 <dd>{statement.recipient.address}</dd>
-              </div>
-            )}
-            {(statement.recipient.phone ||
-              statement.recipient.contact_phone ||
-              statement.recipient.whatsapp) && (
-              <div>
-                <dt>{t.contact}</dt>
-                <dd>
-                  {[
-                    statement.recipient.contact_phone,
-                    statement.recipient.phone,
-                    statement.recipient.whatsapp,
-                  ]
-                    .filter(Boolean)
-                    .filter((v, i, arr) => arr.indexOf(v) === i)
-                    .join(" · ")}
-                </dd>
               </div>
             )}
           </dl>

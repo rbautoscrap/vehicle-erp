@@ -338,6 +338,42 @@ export function StatementForm({
             />
           </div>
         </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="recipient_contact_person">담당자</label>
+            <input
+              id="recipient_contact_person"
+              value={values.recipient.contact_person}
+              onChange={(e) =>
+                setValues((v) => ({
+                  ...v,
+                  recipient: {
+                    ...v.recipient,
+                    contact_person: e.target.value,
+                  },
+                }))
+              }
+              placeholder="담당자 명"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="recipient_contact_phone">연락처</label>
+            <input
+              id="recipient_contact_phone"
+              value={values.recipient.contact_phone}
+              onChange={(e) =>
+                setValues((v) => ({
+                  ...v,
+                  recipient: {
+                    ...v.recipient,
+                    contact_phone: e.target.value,
+                  },
+                }))
+              }
+              placeholder="연락처"
+            />
+          </div>
+        </div>
         <div className="field">
           <label htmlFor="recipient_address">주소</label>
           <input

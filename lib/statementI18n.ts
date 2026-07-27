@@ -25,6 +25,7 @@ export type StatementLabels = {
   name: string;
   representativePhone: string;
   contactPerson: string;
+  managerName: string;
   managerContact: string;
   contact: string;
   address: string;
@@ -54,6 +55,7 @@ const KO: StatementLabels = {
   name: "성명",
   representativePhone: "대표번호",
   contactPerson: "담당 프로",
+  managerName: "담당자",
   managerContact: "담당 연락처",
   contact: "연락처",
   address: "주소",
@@ -83,6 +85,7 @@ const EN: StatementLabels = {
   name: "Name",
   representativePhone: "Main Phone",
   contactPerson: "Pro Manager",
+  managerName: "Manager",
   managerContact: "Manager Contact",
   contact: "Contact",
   address: "Address",
