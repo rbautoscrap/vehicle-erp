@@ -112,71 +112,94 @@ export default function AdminStatementsPage() {
         <p style={{ margin: "0 0 12px", color: "var(--accent)" }}>{message}</p>
       )}
 
-      <div className="actions" style={{ marginBottom: 16 }}>
+      <div className="actions" style={{ marginBottom: 12 }}>
         <Link href="/admin/statements/new" className="btn btn-primary">
           새 거래명세서 작성
         </Link>
       </div>
 
-      <h2 className="ts-section-title" style={{ marginTop: 0 }}>
-        명세서 목록
-      </h2>
+      <div className="ts-list-head">
+        <h2 className="ts-section-title" style={{ margin: 0 }}>
+          명세서 목록
+        </h2>
+        {statements.length > 0 && (
+          <p className="field-hint" style={{ margin: 0 }}>
+            {rangeStart}–{rangeEnd} / 전체 {statements.length}건
+          </p>
+        )}
+      </div>
 
       {statements.length === 0 ? (
         <div className="empty">등록된 거래명세서가 없습니다.</div>
       ) : (
         <>
-          <p className="field-hint" style={{ marginTop: 0 }}>
-            {rangeStart}–{rangeEnd} / 전체 {statements.length}건
-          </p>
-          <div className="stack">
-            {pageItems.map((s) => {
-              const account =
-                accounts.find((a) => a.id === s.bank_account_id) || null;
-              const total = statementGrandTotal(s.items, s.currency);
-              const busy = busyId === s.id;
-              return (
-                <div key={s.id} className="auction-row">
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      className="actions"
-                      style={{ justifyContent: "space-between" }}
-                    >
-                      <h3 style={{ margin: 0 }}>{s.number}</h3>
-                      <span className="badge badge-upcoming">{s.currency}</span>
-                    </div>
-                    <div
-                      className="detail-price bid-amount"
-                      style={{ margin: "8px 0 4px", fontSize: "1.15rem" }}
-                    >
-                      {formatStatementMoney(total, s.currency)}
-                    </div>
-                    <div className="auction-meta">
-                      <span>발행 {formatStatementDate(s.issued_at)}</span>
-                      <span>{s.recipient.name}</span>
-                      {account && <span>{bankAccountLabel(account)}</span>}
-                      <span>품목 {s.items.length}건</span>
-                    </div>
-                  </div>
-                  <div className="actions">
-                    <Link
-                      href={`/admin/statements/${s.id}`}
-                      className="btn btn-primary"
-                    >
-                      보기/수정
-                    </Link>
-                    <button
-                      type="button"
-                      className="btn"
-                      disabled={busy}
-                      onClick={() => void deleteStatement(s.id, s.number)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="ts-list-wrap">
+            <table className="ts-list-table">
+              <thead>
+                <tr>
+                  <th className="ts-list-no">명세서 번호</th>
+                  <th className="ts-list-date">발행일</th>
+                  <th className="ts-list-name">공급받는자</th>
+                  <th className="ts-list-amount">합계</th>
+                  <th className="ts-list-cur">통화</th>
+                  <th className="ts-list-items">품목</th>
+                  <th className="ts-list-bank">입금 계좌</th>
+                  <th className="ts-list-actions">관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.map((s) => {
+                  const account =
+                    accounts.find((a) => a.id === s.bank_account_id) || null;
+                  const total = statementGrandTotal(s.items, s.currency);
+                  const busy = busyId === s.id;
+                  return (
+                    <tr key={s.id}>
+                      <td className="ts-list-no">
+                        <Link href={`/admin/statements/${s.id}`}>{s.number}</Link>
+                      </td>
+                      <td className="ts-list-date">
+                        {formatStatementDate(s.issued_at)}
+                      </td>
+                      <td className="ts-list-name" title={s.recipient.name}>
+                        {s.recipient.name || "—"}
+                      </td>
+                      <td className="ts-list-amount">
+                        {formatStatementMoney(total, s.currency)}
+                      </td>
+                      <td className="ts-list-cur">{s.currency}</td>
+                      <td className="ts-list-items">{s.items.length}</td>
+                      <td
+                        className="ts-list-bank"
+                        title={account ? bankAccountLabel(account) : ""}
+                      >
+                        {account
+                          ? `${account.bank} ${account.account_number}`
+                          : "—"}
+                      </td>
+                      <td className="ts-list-actions">
+                        <div className="ts-list-btns">
+                          <Link
+                            href={`/admin/statements/${s.id}`}
+                            className="btn btn-primary"
+                          >
+                            수정
+                          </Link>
+                          <button
+                            type="button"
+                            className="btn"
+                            disabled={busy}
+                            onClick={() => void deleteStatement(s.id, s.number)}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           {totalPages > 1 && (

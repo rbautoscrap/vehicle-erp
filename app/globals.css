@@ -2321,6 +2321,118 @@ select {
   border: 0;
 }
 
+.ts-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ts-list-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.ts-list-table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.9rem;
+}
+
+.ts-list-table th,
+.ts-list-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-list-table th {
+  background: #f3f1ec;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ts-list-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ts-list-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.ts-list-no {
+  width: 18%;
+}
+
+.ts-list-no a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ts-list-date {
+  width: 11%;
+}
+
+.ts-list-name {
+  width: 12%;
+}
+
+.ts-list-amount {
+  width: 14%;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.ts-list-table th.ts-list-amount {
+  text-align: right;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.ts-list-cur {
+  width: 7%;
+  text-align: center;
+}
+
+.ts-list-items {
+  width: 7%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.ts-list-bank {
+  width: 18%;
+  color: var(--muted);
+}
+
+.ts-list-actions {
+  width: 13%;
+}
+
+.ts-list-btns {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.ts-list-btns .btn {
+  padding: 4px 10px;
+  min-height: 30px;
+  font-size: 0.8rem;
+}
+
 .ts-preview-wrap {
   position: sticky;
   top: 72px;
