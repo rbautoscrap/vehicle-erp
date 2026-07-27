@@ -537,7 +537,8 @@ export function StatementForm({
           <label htmlFor="note">하단 안내 문구</label>
           <textarea
             id="note"
-            rows={5}
+            className="ts-note-input"
+            rows={6}
             value={values.note}
             onChange={(e) => setValues((v) => ({ ...v, note: e.target.value }))}
             placeholder="비우면 기본 입고·이동 안내 문구가 표시됩니다."

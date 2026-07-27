@@ -3,9 +3,7 @@ import { DEFAULT_STATEMENT_NOTE } from "@/lib/statements";
 export type StatementLocale = "ko" | "en";
 
 export const DEFAULT_STATEMENT_NOTE_EN = `Please coordinate with the storage facility before moving the vehicle.
-
-Please arrange the move.
-Documents will be handled by RB Auto.
+All documents (intake and scrap deregistration) will be handled by RB Auto.
 
 ※ After vehicle arrival
 1. Front and rear photos of the vehicle
@@ -13,7 +11,7 @@ Documents will be handled by RB Auto.
 3. Instrument cluster photo
 4. License plate disposal photo (if either plate is missing, VIN photo)
 5. Arrival date (e.g., 1/23 arrival)
-- Please send via KakaoTalk.`;
+- Please reply via KakaoTalk.`;
 
 export type StatementLabels = {
   title: string;
@@ -110,6 +108,34 @@ function normalizeNote(note: string) {
   return note.replace(/\r\n/g, "\n").trim();
 }
 
+/** Previous default notes — still treated as "default" for locale switching. */
+const LEGACY_STATEMENT_NOTES = [
+  `이동전 보관소 측과 소통 후 진행 부탁드립니다.
+
+이동 부탁드립니다.
+서류는 알비오토 진행입니다
+
+※ 차량 입고 후
+1.차량 앞,뒤사진
+2.등록증사진
+3.계기판사진
+4.번호판폐기사진 (번호판 2개 중 하나라도 없을 시 차대번호 사진)
+5. 입고 날짜(예:1/23 입고)
+-카카오톡 발송 바랍니다.`,
+  `Please coordinate with the storage facility before moving the vehicle.
+
+Please arrange the move.
+Documents will be handled by RB Auto.
+
+※ After vehicle arrival
+1. Front and rear photos of the vehicle
+2. Registration certificate photo
+3. Instrument cluster photo
+4. License plate disposal photo (if either plate is missing, VIN photo)
+5. Arrival date (e.g., 1/23 arrival)
+- Please send via KakaoTalk.`,
+];
+
 /** Resolve footer text for the active locale (defaults switch with language). */
 export function resolveStatementNote(
   note: string | undefined,
@@ -119,7 +145,10 @@ export function resolveStatementNote(
   const koDefault = normalizeNote(DEFAULT_STATEMENT_NOTE);
   const enDefault = normalizeNote(DEFAULT_STATEMENT_NOTE_EN);
   const isDefault =
-    !trimmed || trimmed === koDefault || trimmed === enDefault;
+    !trimmed ||
+    trimmed === koDefault ||
+    trimmed === enDefault ||
+    LEGACY_STATEMENT_NOTES.some((n) => normalizeNote(n) === trimmed);
   if (isDefault) {
     return locale === "en" ? DEFAULT_STATEMENT_NOTE_EN : DEFAULT_STATEMENT_NOTE;
   }

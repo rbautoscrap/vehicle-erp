@@ -178,9 +178,7 @@ export function statementGrandTotal(
 }
 
 export const DEFAULT_STATEMENT_NOTE = `이동전 보관소 측과 소통 후 진행 부탁드립니다.
-
-이동 부탁드립니다.
-서류는 알비오토 진행입니다
+서류 (입고 및 폐차말소) 일체는 알비오토 처리합니다.
 
 ※ 차량 입고 후
 1.차량 앞,뒤사진
@@ -188,7 +186,7 @@ export const DEFAULT_STATEMENT_NOTE = `이동전 보관소 측과 소통 후 진
 3.계기판사진
 4.번호판폐기사진 (번호판 2개 중 하나라도 없을 시 차대번호 사진)
 5. 입고 날짜(예:1/23 입고)
--카카오톡 발송 바랍니다.`;
+-카카오톡 회신 바랍니다.`;
 
 /** Round money for display/storage by currency decimals. */
 export function roundMoney(amount: number, currency: BidCurrency): number {
