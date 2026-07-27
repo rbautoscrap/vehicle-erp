@@ -44,7 +44,6 @@ type Props = {
   saving?: boolean;
   error?: string;
   onSubmit: (values: StatementFormValues) => void | Promise<void>;
-  onAccountsChange?: () => void;
 };
 
 function defaultValues(
@@ -100,18 +99,10 @@ export function StatementForm({
   saving,
   error,
   onSubmit,
-  onAccountsChange,
 }: Props) {
   const [values, setValues] = useState(() => defaultValues(initial, accounts));
   const [showPreview, setShowPreview] = useState(true);
   const [locale, setLocale] = useState<StatementLocale>("ko");
-  const [accountForm, setAccountForm] = useState({
-    bank: "",
-    account_number: "",
-    holder: "",
-  });
-  const [accountBusy, setAccountBusy] = useState(false);
-  const [accountError, setAccountError] = useState("");
 
   const docId = "statement-document";
   const selectedAccount =
@@ -159,33 +150,6 @@ export function StatementForm({
       ...v,
       items: v.items.length <= 1 ? v.items : v.items.filter((i) => i.id !== id),
     }));
-  }
-
-  async function addBankAccount() {
-    setAccountError("");
-    setAccountBusy(true);
-    try {
-      const res = await fetch("/api/admin/bank-accounts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...accountForm,
-          is_default: accounts.length === 0,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setAccountError(data.error || "계좌 추가에 실패했습니다.");
-        return;
-      }
-      setAccountForm({ bank: "", account_number: "", holder: "" });
-      if (data.account?.id) {
-        setValues((v) => ({ ...v, bank_account_id: data.account.id }));
-      }
-      onAccountsChange?.();
-    } finally {
-      setAccountBusy(false);
-    }
   }
 
   function handleSubmit(e: FormEvent) {
@@ -512,61 +476,6 @@ export function StatementForm({
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="ts-account-add">
-          <div className="field-row-3">
-            <div className="field">
-              <label htmlFor="new_bank">은행</label>
-              <input
-                id="new_bank"
-                value={accountForm.bank}
-                onChange={(e) =>
-                  setAccountForm((f) => ({ ...f, bank: e.target.value }))
-                }
-                placeholder="농협"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="new_account">계좌번호</label>
-              <input
-                id="new_account"
-                value={accountForm.account_number}
-                onChange={(e) =>
-                  setAccountForm((f) => ({
-                    ...f,
-                    account_number: e.target.value,
-                  }))
-                }
-                placeholder="351-1093-4618-73"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="new_holder">예금주</label>
-              <input
-                id="new_holder"
-                value={accountForm.holder}
-                onChange={(e) =>
-                  setAccountForm((f) => ({ ...f, holder: e.target.value }))
-                }
-                placeholder="(주)알비오토"
-              />
-            </div>
-          </div>
-          {accountError && <p className="error">{accountError}</p>}
-          <button
-            type="button"
-            className="btn"
-            disabled={
-              accountBusy ||
-              !accountForm.bank.trim() ||
-              !accountForm.account_number.trim() ||
-              !accountForm.holder.trim()
-            }
-            onClick={() => void addBankAccount()}
-          >
-            {accountBusy ? "추가 중…" : "계좌 추가"}
-          </button>
         </div>
 
         {error && <p className="error">{error}</p>}

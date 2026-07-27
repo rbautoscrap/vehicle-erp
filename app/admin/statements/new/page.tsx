@@ -86,7 +86,6 @@ export default function AdminStatementNewPage() {
         saving={saving}
         error={error}
         onSubmit={onSubmit}
-        onAccountsChange={() => void loadAccounts()}
       />
     </AppShell>
   );

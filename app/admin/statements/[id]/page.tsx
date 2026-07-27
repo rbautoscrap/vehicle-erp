@@ -35,14 +35,6 @@ export default function AdminStatementEditPage() {
     setAccounts(data.accounts || []);
   }, [id]);
 
-  const loadAccounts = useCallback(async () => {
-    const res = await fetch("/api/admin/bank-accounts");
-    if (res.ok) {
-      const data = await res.json();
-      setAccounts(data.accounts || []);
-    }
-  }, []);
-
   useEffect(() => {
     if (!loading && user && user.role !== "admin") {
       router.replace("/");
@@ -70,7 +62,6 @@ export default function AdminStatementEditPage() {
       }
       setStatement(data.statement);
       setMessage("저장되었습니다.");
-      await loadAccounts();
     } catch {
       setError("서버에 연결하지 못했습니다.");
     } finally {
@@ -123,7 +114,6 @@ export default function AdminStatementEditPage() {
         saving={saving}
         error={error}
         onSubmit={onSubmit}
-        onAccountsChange={() => void loadAccounts()}
       />
     </AppShell>
   );
