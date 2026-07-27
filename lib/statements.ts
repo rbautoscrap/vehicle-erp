@@ -20,10 +20,19 @@ export type StatementItem = {
 };
 
 export type StatementParty = {
+  /** Brand / display name (header) */
   name: string;
+  /** 상호명 */
   company: string;
+  /** 대표번호 */
   phone: string;
+  /** @deprecated Prefer contact_phone; kept for older statements */
   whatsapp: string;
+  /** 담당자 */
+  contact_person: string;
+  /** 연락처 */
+  contact_phone: string;
+  /** 주소 */
   address: string;
 };
 
@@ -42,12 +51,17 @@ export type TransactionStatement = {
   updated_at: string;
 };
 
+export const DEFAULT_SUPPLIER_ADDRESS =
+  "충남 천안시 동남구 청수5로 4 더다움 트윈브릿지 A동 7층";
+
 export const DEFAULT_SUPPLIER: StatementParty = {
   name: "KOREA AUTO TRADE",
   company: "주식회사 알비오토",
   phone: "+82 10-5817-2207",
-  whatsapp: "+821058172207",
-  address: "",
+  whatsapp: "",
+  contact_person: "",
+  contact_phone: "",
+  address: DEFAULT_SUPPLIER_ADDRESS,
 };
 
 export const DEFAULT_BANK_ACCOUNTS: Omit<BankAccount, "id" | "created_at">[] = [
@@ -60,15 +74,27 @@ export const DEFAULT_BANK_ACCOUNTS: Omit<BankAccount, "id" | "created_at">[] = [
 ];
 
 export function emptyParty(): StatementParty {
-  return { name: "", company: "", phone: "", whatsapp: "", address: "" };
+  return {
+    name: "",
+    company: "",
+    phone: "",
+    whatsapp: "",
+    contact_person: "",
+    contact_phone: "",
+    address: "",
+  };
 }
 
 export function normalizeParty(raw?: Partial<StatementParty> | null): StatementParty {
+  const whatsapp = String(raw?.whatsapp || "").trim();
+  const contactPhone = String(raw?.contact_phone || "").trim() || whatsapp;
   return {
     name: String(raw?.name || "").trim(),
     company: String(raw?.company || "").trim(),
     phone: String(raw?.phone || "").trim(),
-    whatsapp: String(raw?.whatsapp || "").trim(),
+    whatsapp,
+    contact_person: String(raw?.contact_person || "").trim(),
+    contact_phone: contactPhone,
     address: String(raw?.address || "").trim(),
   };
 }

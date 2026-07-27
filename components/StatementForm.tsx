@@ -12,6 +12,7 @@ import type {
 import {
   DEFAULT_STATEMENT_NOTE,
   DEFAULT_SUPPLIER,
+  DEFAULT_SUPPLIER_ADDRESS,
   bankAccountLabel,
   dateInputToIso,
   formatStatementMoney,
@@ -52,10 +53,14 @@ function defaultValues(
   const defAccount =
     accounts.find((a) => a.is_default) || accounts[0] || null;
   if (initial) {
+    const supplier = { ...initial.supplier };
+    if (!supplier.address?.trim()) {
+      supplier.address = DEFAULT_SUPPLIER_ADDRESS;
+    }
     return {
       issued_at: toDateInputValue(initial.issued_at),
       currency: initial.currency,
-      supplier: { ...initial.supplier },
+      supplier,
       recipient: { ...initial.recipient },
       items:
         initial.items.length > 0
@@ -74,6 +79,8 @@ function defaultValues(
       company: "",
       phone: "",
       whatsapp: "",
+      contact_person: "",
+      contact_phone: "",
       address: "",
     },
     items: [newStatementItem(0)],
@@ -224,37 +231,22 @@ export function StatementForm({
         )}
 
         <h2 className="ts-section-title">공급자</h2>
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="supplier_name">상호 (영문)</label>
-            <input
-              id="supplier_name"
-              value={values.supplier.name}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  supplier: { ...v.supplier, name: e.target.value },
-                }))
-              }
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="supplier_company">상호 (국문)</label>
-            <input
-              id="supplier_company"
-              value={values.supplier.company}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  supplier: { ...v.supplier, company: e.target.value },
-                }))
-              }
-            />
-          </div>
+        <div className="field">
+          <label htmlFor="supplier_company">상호명</label>
+          <input
+            id="supplier_company"
+            value={values.supplier.company}
+            onChange={(e) =>
+              setValues((v) => ({
+                ...v,
+                supplier: { ...v.supplier, company: e.target.value },
+              }))
+            }
+          />
         </div>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="supplier_phone">Tel / KakaoTalk</label>
+            <label htmlFor="supplier_phone">대표번호</label>
             <input
               id="supplier_phone"
               value={values.supplier.phone}
@@ -267,14 +259,42 @@ export function StatementForm({
             />
           </div>
           <div className="field">
-            <label htmlFor="supplier_whatsapp">WhatsApp</label>
+            <label htmlFor="supplier_contact_person">담당자</label>
             <input
-              id="supplier_whatsapp"
-              value={values.supplier.whatsapp}
+              id="supplier_contact_person"
+              value={values.supplier.contact_person}
               onChange={(e) =>
                 setValues((v) => ({
                   ...v,
-                  supplier: { ...v.supplier, whatsapp: e.target.value },
+                  supplier: { ...v.supplier, contact_person: e.target.value },
+                }))
+              }
+            />
+          </div>
+        </div>
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="supplier_contact_phone">연락처</label>
+            <input
+              id="supplier_contact_phone"
+              value={values.supplier.contact_phone}
+              onChange={(e) =>
+                setValues((v) => ({
+                  ...v,
+                  supplier: { ...v.supplier, contact_phone: e.target.value },
+                }))
+              }
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="supplier_address">기본 주소</label>
+            <input
+              id="supplier_address"
+              value={values.supplier.address}
+              onChange={(e) =>
+                setValues((v) => ({
+                  ...v,
+                  supplier: { ...v.supplier, address: e.target.value },
                 }))
               }
             />

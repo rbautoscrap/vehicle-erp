@@ -23,7 +23,10 @@ export type StatementLabels = {
   supplier: string;
   recipient: string;
   tradeName: string;
+  businessName: string;
   name: string;
+  representativePhone: string;
+  contactPerson: string;
   contact: string;
   address: string;
   item: string;
@@ -48,7 +51,10 @@ const KO: StatementLabels = {
   supplier: "공급자",
   recipient: "공급받는자",
   tradeName: "상호",
+  businessName: "상호명",
   name: "성명",
+  representativePhone: "대표번호",
+  contactPerson: "담당자",
   contact: "연락처",
   address: "주소",
   item: "품목",
@@ -73,7 +79,10 @@ const EN: StatementLabels = {
   supplier: "Supplier",
   recipient: "Recipient",
   tradeName: "Company",
+  businessName: "Business Name",
   name: "Name",
+  representativePhone: "Main Phone",
+  contactPerson: "Contact Person",
   contact: "Contact",
   address: "Address",
   item: "Item",

@@ -69,25 +69,29 @@ export function StatementDocument({
           <h2>{t.supplier}</h2>
           <dl>
             <div>
-              <dt>{t.tradeName}</dt>
+              <dt>{t.businessName}</dt>
               <dd>
-                {statement.supplier.name}
-                {statement.supplier.company
-                  ? ` / ${statement.supplier.company}`
-                  : ""}
+                {statement.supplier.company ||
+                  statement.supplier.name ||
+                  "—"}
               </dd>
             </div>
-            {(statement.supplier.phone || statement.supplier.whatsapp) && (
+            {statement.supplier.phone && (
+              <div>
+                <dt>{t.representativePhone}</dt>
+                <dd>{statement.supplier.phone}</dd>
+              </div>
+            )}
+            {statement.supplier.contact_person && (
+              <div>
+                <dt>{t.contactPerson}</dt>
+                <dd>{statement.supplier.contact_person}</dd>
+              </div>
+            )}
+            {statement.supplier.contact_phone && (
               <div>
                 <dt>{t.contact}</dt>
-                <dd>
-                  {statement.supplier.phone && (
-                    <span>Tel / KakaoTalk {statement.supplier.phone}</span>
-                  )}
-                  {statement.supplier.whatsapp && (
-                    <span>WhatsApp {statement.supplier.whatsapp}</span>
-                  )}
-                </dd>
+                <dd>{statement.supplier.contact_phone}</dd>
               </div>
             )}
             {statement.supplier.address && (
@@ -117,12 +121,19 @@ export function StatementDocument({
                 <dd>{statement.recipient.address}</dd>
               </div>
             )}
-            {(statement.recipient.phone || statement.recipient.whatsapp) && (
+            {(statement.recipient.phone ||
+              statement.recipient.contact_phone ||
+              statement.recipient.whatsapp) && (
               <div>
                 <dt>{t.contact}</dt>
                 <dd>
-                  {[statement.recipient.phone, statement.recipient.whatsapp]
+                  {[
+                    statement.recipient.contact_phone,
+                    statement.recipient.phone,
+                    statement.recipient.whatsapp,
+                  ]
                     .filter(Boolean)
+                    .filter((v, i, arr) => arr.indexOf(v) === i)
                     .join(" · ")}
                 </dd>
               </div>
