@@ -22,6 +22,8 @@ import {
   toDateInputValue,
 } from "@/lib/statements";
 import { StatementDocument } from "@/components/StatementDocument";
+import { StatementToolbar } from "@/components/StatementToolbar";
+import type { StatementLocale } from "@/lib/statementI18n";
 
 export type StatementFormValues = {
   issued_at: string;
@@ -91,6 +93,7 @@ export function StatementForm({
 }: Props) {
   const [values, setValues] = useState(() => defaultValues(initial, accounts));
   const [showPreview, setShowPreview] = useState(true);
+  const [locale, setLocale] = useState<StatementLocale>("ko");
   const [accountForm, setAccountForm] = useState({
     bank: "",
     account_number: "",
@@ -99,6 +102,7 @@ export function StatementForm({
   const [accountBusy, setAccountBusy] = useState(false);
   const [accountError, setAccountError] = useState("");
 
+  const docId = "statement-document";
   const selectedAccount =
     accounts.find((a) => a.id === values.bank_account_id) || null;
 
@@ -508,21 +512,22 @@ export function StatementForm({
           >
             {showPreview ? "미리보기 숨기기" : "미리보기 보기"}
           </button>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => window.print()}
-          >
-            인쇄
-          </button>
         </div>
       </form>
 
       {showPreview && (
         <div className="ts-preview-wrap" id="statement-print-area">
+          <StatementToolbar
+            locale={locale}
+            onLocaleChange={setLocale}
+            targetId={docId}
+            fileName={previewStatement.number || "transaction-statement"}
+          />
           <StatementDocument
             statement={previewStatement}
             account={selectedAccount}
+            locale={locale}
+            documentId={docId}
           />
         </div>
       )}

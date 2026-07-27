@@ -2,7 +2,6 @@
 
 import type { BankAccount, TransactionStatement } from "@/lib/statements";
 import {
-  DEFAULT_STATEMENT_NOTE,
   bankAccountLabel,
   formatStatementDate,
   formatStatementMoney,
@@ -10,49 +9,67 @@ import {
   statementSupplyTotal,
   statementVatAmount,
 } from "@/lib/statements";
+import {
+  getStatementLabels,
+  resolveStatementNote,
+  type StatementLocale,
+} from "@/lib/statementI18n";
 
 type Props = {
   statement: TransactionStatement;
   account: BankAccount | null;
+  locale?: StatementLocale;
+  documentId?: string;
 };
 
-export function StatementDocument({ statement, account }: Props) {
+export function StatementDocument({
+  statement,
+  account,
+  locale = "ko",
+  documentId = "statement-document",
+}: Props) {
+  const t = getStatementLabels(locale);
   const currency = statement.currency;
   const supply = statementSupplyTotal(statement.items);
   const vat = statementVatAmount(statement.items, currency);
   const total = statementGrandTotal(statement.items, currency);
-  const footerNote = (statement.note || "").trim() || DEFAULT_STATEMENT_NOTE;
+  const footerNote = resolveStatementNote(statement.note, locale);
 
   return (
-    <article className="ts-doc" aria-label="거래명세서">
+    <article
+      id={documentId}
+      className="ts-doc"
+      aria-label={t.title}
+      lang={locale === "en" ? "en" : "ko"}
+    >
       <header className="ts-doc-header">
         <div className="ts-doc-brand">
           <strong>{statement.supplier.name || "KOREA AUTO TRADE"}</strong>
           <span>{statement.supplier.company || "주식회사 알비오토"}</span>
         </div>
         <div className="ts-doc-title">
-          <h1>거래명세서</h1>
-          <p>TRANSACTION STATEMENT</p>
+          <h1>{t.title}</h1>
+          <p>{t.subtitle}</p>
         </div>
       </header>
 
       <div className="ts-doc-meta">
         <div>
-          <span>명세서 번호</span>
+          <span>{t.number}</span>
           <strong>{statement.number}</strong>
         </div>
         <div>
-          <span>발행일</span>
+          <span>{t.issuedAt}</span>
           <strong>{formatStatementDate(statement.issued_at)}</strong>
         </div>
       </div>
 
       <div className="ts-doc-parties">
         <section>
-          <h2>공급자</h2>
+          <h2>{t.supplier}</h2>
           <dl>
             <div>
-              <dt>상호</dt>
+              <dt>{t.tradeName}</dt>
               <dd>
                 {statement.supplier.name}
                 {statement.supplier.company
@@ -62,7 +79,7 @@ export function StatementDocument({ statement, account }: Props) {
             </div>
             {(statement.supplier.phone || statement.supplier.whatsapp) && (
               <div>
-                <dt>연락처</dt>
+                <dt>{t.contact}</dt>
                 <dd>
                   {statement.supplier.phone && (
                     <span>Tel / KakaoTalk {statement.supplier.phone}</span>
@@ -75,34 +92,34 @@ export function StatementDocument({ statement, account }: Props) {
             )}
             {statement.supplier.address && (
               <div>
-                <dt>주소</dt>
+                <dt>{t.address}</dt>
                 <dd>{statement.supplier.address}</dd>
               </div>
             )}
           </dl>
         </section>
         <section>
-          <h2>공급받는자</h2>
+          <h2>{t.recipient}</h2>
           <dl>
             <div>
-              <dt>성명</dt>
+              <dt>{t.name}</dt>
               <dd>{statement.recipient.name || "—"}</dd>
             </div>
             {statement.recipient.company && (
               <div>
-                <dt>상호</dt>
+                <dt>{t.tradeName}</dt>
                 <dd>{statement.recipient.company}</dd>
               </div>
             )}
             {statement.recipient.address && (
               <div>
-                <dt>주소</dt>
+                <dt>{t.address}</dt>
                 <dd>{statement.recipient.address}</dd>
               </div>
             )}
             {(statement.recipient.phone || statement.recipient.whatsapp) && (
               <div>
-                <dt>연락처</dt>
+                <dt>{t.contact}</dt>
                 <dd>
                   {[statement.recipient.phone, statement.recipient.whatsapp]
                     .filter(Boolean)
@@ -117,10 +134,10 @@ export function StatementDocument({ statement, account }: Props) {
       <table className="ts-doc-table">
         <thead>
           <tr>
-            <th>품목</th>
-            <th>상세</th>
-            <th className="ts-num">수량</th>
-            <th className="ts-num">공급가액</th>
+            <th>{t.item}</th>
+            <th>{t.details}</th>
+            <th className="ts-num">{t.quantity}</th>
+            <th className="ts-num">{t.supplyAmount}</th>
           </tr>
         </thead>
         <tbody>
@@ -139,38 +156,40 @@ export function StatementDocument({ statement, account }: Props) {
 
       <div className="ts-doc-totals">
         <div>
-          <span>공급가액</span>
+          <span>{t.supplyTotal}</span>
           <strong>{formatStatementMoney(supply, currency)}</strong>
         </div>
         <div>
-          <span>부가세 (10%)</span>
+          <span>{t.vat}</span>
           <strong>{formatStatementMoney(vat, currency)}</strong>
         </div>
         <div className="ts-doc-total-sum">
-          <span>합계 ({currency})</span>
+          <span>
+            {t.grandTotal} ({currency})
+          </span>
           <strong>{formatStatementMoney(total, currency)}</strong>
         </div>
       </div>
 
       <section className="ts-doc-bank">
-        <h2>입금 계좌</h2>
+        <h2>{t.bankAccount}</h2>
         {account ? (
           <dl>
             <div>
-              <dt>은행</dt>
+              <dt>{t.bank}</dt>
               <dd>{account.bank}</dd>
             </div>
             <div>
-              <dt>계좌번호</dt>
+              <dt>{t.accountNumber}</dt>
               <dd>{account.account_number}</dd>
             </div>
             <div>
-              <dt>예금주</dt>
+              <dt>{t.holder}</dt>
               <dd>{account.holder}</dd>
             </div>
           </dl>
         ) : (
-          <p className="ts-muted">선택된 입금 계좌가 없습니다.</p>
+          <p className="ts-muted">{t.noAccount}</p>
         )}
         {account && (
           <p className="ts-doc-bank-line">{bankAccountLabel(account)}</p>

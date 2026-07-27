@@ -2249,6 +2249,64 @@ select {
   top: 72px;
 }
 
+.ts-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ts-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.ts-tool-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ts-tool-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.ts-tool-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.ts-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: #f3f1ec;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ts-tool-btn.is-active .ts-tool-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
 .ts-doc {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -2502,6 +2560,7 @@ select {
   .page-desc,
   .actions,
   .ts-form,
+  .ts-toolbar,
   .error {
     display: none !important;
   }
@@ -2523,5 +2582,9 @@ select {
 
   body {
     background: #fff;
+  }
+
+  body.ts-printing #statement-print-area {
+    display: block !important;
   }
 }
