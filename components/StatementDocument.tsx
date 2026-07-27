@@ -44,7 +44,7 @@ export function StatementDocument({
     >
       <header className="ts-doc-header">
         <div className="ts-doc-brand">
-          <strong>{statement.supplier.name || "KOREA AUTO TRADE"}</strong>
+          <strong>{statement.supplier.name || "RBAUTO Co., Ltd."}</strong>
           <span>{statement.supplier.company || "주식회사 알비오토"}</span>
         </div>
         <div className="ts-doc-title">
