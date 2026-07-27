@@ -12,7 +12,6 @@ import {
 } from "@/lib/statements";
 import {
   getStatementLabels,
-  resolveStatementNote,
   type StatementLocale,
 } from "@/lib/statementI18n";
 
@@ -34,7 +33,6 @@ export function StatementDocument({
   const supply = statementSupplyTotal(statement.items);
   const vat = statementVatAmount(statement.items, currency);
   const total = statementGrandTotal(statement.items, currency);
-  const footerNote = resolveStatementNote(statement.note, locale);
 
   return (
     <article
@@ -200,8 +198,6 @@ export function StatementDocument({
           <p className="ts-doc-bank-line">{bankAccountLabel(account)}</p>
         )}
       </section>
-
-      <footer className="ts-doc-footer">{footerNote}</footer>
     </article>
   );
 }

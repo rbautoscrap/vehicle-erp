@@ -10,7 +10,6 @@ import type {
   TransactionStatement,
 } from "@/lib/statements";
 import {
-  DEFAULT_STATEMENT_NOTE,
   DEFAULT_SUPPLIER,
   DEFAULT_SUPPLIER_ADDRESS,
   FIXED_SUPPLIER_PHONE,
@@ -70,7 +69,7 @@ function defaultValues(
           ? initial.items.map((i) => ({ ...i }))
           : [newStatementItem(0)],
       bank_account_id: initial.bank_account_id ?? defAccount?.id ?? null,
-      note: initial.note || DEFAULT_STATEMENT_NOTE,
+      note: initial.note || "",
     };
   }
   return {
@@ -88,7 +87,7 @@ function defaultValues(
     },
     items: [newStatementItem(0)],
     bank_account_id: defAccount?.id ?? null,
-    note: DEFAULT_STATEMENT_NOTE,
+    note: "",
   };
 }
 

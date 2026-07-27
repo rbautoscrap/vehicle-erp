@@ -2717,19 +2717,6 @@ select {
   color: var(--muted);
 }
 
-.ts-doc-footer {
-  font-size: 0.85rem;
-  color: var(--danger);
-  font-weight: 600;
-  line-height: 1.55;
-  white-space: pre-line;
-}
-
-.ts-note-input {
-  color: var(--danger) !important;
-  font-weight: 600;
-}
-
 @media (max-width: 980px) {
   .ts-layout {
     grid-template-columns: 1fr;
