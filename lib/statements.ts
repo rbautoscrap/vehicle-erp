@@ -54,10 +54,12 @@ export type TransactionStatement = {
 export const DEFAULT_SUPPLIER_ADDRESS =
   "충남 천안시 동남구 청수5로 4 더다움 트윈브릿지 A동 7층";
 
+export const FIXED_SUPPLIER_PHONE = "041-522-7327";
+
 export const DEFAULT_SUPPLIER: StatementParty = {
   name: "RBAUTO Co., Ltd.",
   company: "주식회사 알비오토",
-  phone: "+82 10-5817-2207",
+  phone: FIXED_SUPPLIER_PHONE,
   whatsapp: "",
   contact_person: "",
   contact_phone: "",

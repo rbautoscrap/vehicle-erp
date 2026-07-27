@@ -2,6 +2,7 @@
 
 import type { BankAccount, TransactionStatement } from "@/lib/statements";
 import {
+  FIXED_SUPPLIER_PHONE,
   bankAccountLabel,
   formatStatementDate,
   formatStatementMoney,
@@ -76,12 +77,10 @@ export function StatementDocument({
                   "—"}
               </dd>
             </div>
-            {statement.supplier.phone && (
-              <div>
-                <dt>{t.representativePhone}</dt>
-                <dd>{statement.supplier.phone}</dd>
-              </div>
-            )}
+            <div>
+              <dt>{t.representativePhone}</dt>
+              <dd>{FIXED_SUPPLIER_PHONE}</dd>
+            </div>
             {statement.supplier.contact_person && (
               <div>
                 <dt>{t.contactPerson}</dt>
@@ -90,7 +89,7 @@ export function StatementDocument({
             )}
             {statement.supplier.contact_phone && (
               <div>
-                <dt>{t.contact}</dt>
+                <dt>{t.managerContact}</dt>
                 <dd>{statement.supplier.contact_phone}</dd>
               </div>
             )}

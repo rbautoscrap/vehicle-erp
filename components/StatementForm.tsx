@@ -13,6 +13,7 @@ import {
   DEFAULT_STATEMENT_NOTE,
   DEFAULT_SUPPLIER,
   DEFAULT_SUPPLIER_ADDRESS,
+  FIXED_SUPPLIER_PHONE,
   bankAccountLabel,
   dateInputToIso,
   formatStatementMoney,
@@ -53,7 +54,10 @@ function defaultValues(
   const defAccount =
     accounts.find((a) => a.is_default) || accounts[0] || null;
   if (initial) {
-    const supplier = { ...initial.supplier };
+    const supplier = {
+      ...initial.supplier,
+      phone: FIXED_SUPPLIER_PHONE,
+    };
     if (!supplier.address?.trim()) {
       supplier.address = DEFAULT_SUPPLIER_ADDRESS;
     }
@@ -119,7 +123,7 @@ export function StatementForm({
       number: initial?.number || "TS-PREVIEW-0000",
       issued_at: dateInputToIso(values.issued_at),
       currency: values.currency,
-      supplier: values.supplier,
+      supplier: { ...values.supplier, phone: FIXED_SUPPLIER_PHONE },
       recipient: values.recipient,
       items: values.items,
       bank_account_id: values.bank_account_id,
@@ -186,7 +190,10 @@ export function StatementForm({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    void onSubmit(values);
+    void onSubmit({
+      ...values,
+      supplier: { ...values.supplier, phone: FIXED_SUPPLIER_PHONE },
+    });
   }
 
   return (
@@ -249,17 +256,14 @@ export function StatementForm({
             <label htmlFor="supplier_phone">대표번호</label>
             <input
               id="supplier_phone"
-              value={values.supplier.phone}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  supplier: { ...v.supplier, phone: e.target.value },
-                }))
-              }
+              value={FIXED_SUPPLIER_PHONE}
+              readOnly
+              disabled
             />
+            <p className="field-hint">대표번호는 고정입니다.</p>
           </div>
           <div className="field">
-            <label htmlFor="supplier_contact_person">담당자</label>
+            <label htmlFor="supplier_contact_person">담당 프로</label>
             <input
               id="supplier_contact_person"
               value={values.supplier.contact_person}
@@ -274,7 +278,7 @@ export function StatementForm({
         </div>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="supplier_contact_phone">연락처</label>
+            <label htmlFor="supplier_contact_phone">담당 연락처</label>
             <input
               id="supplier_contact_phone"
               value={values.supplier.contact_phone}
