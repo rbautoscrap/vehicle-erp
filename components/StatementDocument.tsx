@@ -109,14 +109,6 @@ export function StatementDocument({
                 {statement.recipient.company || "—"}
               </dd>
             </div>
-            {statement.recipient.name && (
-              <div>
-                <dt>{t.name}</dt>
-                <dd className="notranslate" translate="no">
-                  {statement.recipient.name}
-                </dd>
-              </div>
-            )}
             {statement.recipient.contact_person && (
               <div>
                 <dt>{t.managerName}</dt>

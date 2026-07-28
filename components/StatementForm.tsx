@@ -63,8 +63,8 @@ function defaultValues(
     // Legacy: name was required; prefer company for business recipients
     if (!recipient.company?.trim() && recipient.name?.trim()) {
       recipient.company = recipient.name;
-      recipient.name = "";
     }
+    recipient.name = "";
     return {
       issued_at: toDateInputValue(initial.issued_at),
       currency: initial.currency,
@@ -278,36 +278,20 @@ export function StatementForm({
         </div>
 
         <h2 className="ts-section-title">공급받는자</h2>
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="recipient_company">상호 *</label>
-            <input
-              id="recipient_company"
-              required
-              value={values.recipient.company}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  recipient: { ...v.recipient, company: e.target.value },
-                }))
-              }
-              placeholder="폐차장·업체 상호명"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="recipient_name">성명</label>
-            <input
-              id="recipient_name"
-              value={values.recipient.name}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  recipient: { ...v.recipient, name: e.target.value },
-                }))
-              }
-              placeholder="담당자 개인 성명 (선택)"
-            />
-          </div>
+        <div className="field">
+          <label htmlFor="recipient_company">상호 *</label>
+          <input
+            id="recipient_company"
+            required
+            value={values.recipient.company}
+            onChange={(e) =>
+              setValues((v) => ({
+                ...v,
+                recipient: { ...v.recipient, company: e.target.value },
+              }))
+            }
+            placeholder="폐차장·업체 상호명"
+          />
         </div>
         <div className="field-row">
           <div className="field">
