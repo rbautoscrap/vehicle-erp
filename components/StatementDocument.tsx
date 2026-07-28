@@ -42,6 +42,11 @@ export function StatementDocument({
       aria-label={t.title}
       lang={locale === "en" ? "en" : "ko"}
     >
+      <div className="ts-doc-watermark" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/rbauto-logo.png" alt="" />
+      </div>
+      <div className="ts-doc-body">
       <header className="ts-doc-header">
         <div className="ts-doc-brand">
           <strong>{statement.supplier.name || "RBAUTO Co., Ltd."}</strong>
@@ -199,6 +204,7 @@ export function StatementDocument({
           <p className="ts-doc-bank-line">{bankAccountLabel(account)}</p>
         )}
       </section>
+      </div>
     </article>
   );
 }

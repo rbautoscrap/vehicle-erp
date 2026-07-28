@@ -2497,12 +2497,37 @@ select {
 }
 
 .ts-doc {
+  position: relative;
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 28px 24px;
   color: var(--ink);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.ts-doc-watermark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ts-doc-watermark img {
+  width: min(72%, 420px);
+  height: auto;
+  opacity: 0.08;
+  object-fit: contain;
+}
+
+.ts-doc-body {
+  position: relative;
+  z-index: 1;
 }
 
 .ts-doc-header {
@@ -2812,6 +2837,13 @@ select {
     box-shadow: none;
     border-radius: 0;
     padding: 0;
+    overflow: visible;
+  }
+
+  .ts-doc-watermark img {
+    opacity: 0.1;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   body {
