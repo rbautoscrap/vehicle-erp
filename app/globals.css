@@ -2827,6 +2827,65 @@ select {
   list-style: none;
 }
 
+.ts-ac-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px;
+  align-items: stretch;
+  border-radius: 6px;
+}
+
+.ts-ac-item.is-active,
+.ts-ac-item:hover {
+  background: var(--accent-soft);
+}
+
+.ts-ac-item .ts-ac-option {
+  background: transparent;
+}
+
+.ts-ac-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 6px;
+}
+
+.ts-ac-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.ts-ac-icon-btn:hover {
+  background: #fff;
+  color: var(--accent);
+}
+
+.ts-ac-icon-btn.is-danger:hover {
+  color: var(--danger);
+}
+
+.ts-ac-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.ts-ac-edit {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: auto;
+}
+
 .ts-ac-empty {
   padding: 28px 12px;
   text-align: center;

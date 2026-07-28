@@ -122,6 +122,7 @@ export default function AdminStatementEditPage() {
         saving={saving}
         error={error}
         onSubmit={onSubmit}
+        onRecipientsChange={setRecipients}
       />
     </AppShell>
   );

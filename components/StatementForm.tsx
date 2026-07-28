@@ -44,6 +44,7 @@ type Props = {
   saving?: boolean;
   error?: string;
   onSubmit: (values: StatementFormValues) => void | Promise<void>;
+  onRecipientsChange?: (recipients: StatementRecipientContact[]) => void;
 };
 
 function defaultValues(
@@ -106,6 +107,7 @@ export function StatementForm({
   saving,
   error,
   onSubmit,
+  onRecipientsChange,
 }: Props) {
   const [values, setValues] = useState(() => defaultValues(initial, accounts));
   const [showPreview, setShowPreview] = useState(true);
@@ -281,6 +283,7 @@ export function StatementForm({
                 },
               }))
             }
+            onRecipientsChange={onRecipientsChange}
           />
         </div>
         <div className="field-row">

@@ -95,6 +95,7 @@ export default function AdminStatementNewPage() {
         saving={saving}
         error={error}
         onSubmit={onSubmit}
+        onRecipientsChange={setRecipients}
       />
     </AppShell>
   );
