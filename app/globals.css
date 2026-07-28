@@ -2746,21 +2746,92 @@ select {
   position: relative;
 }
 
-.ts-ac-list {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
+.ts-ac-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.ts-ac-row .btn {
+  white-space: nowrap;
+}
+
+.ts-ac-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(26, 26, 26, 0.35);
+}
+
+.ts-ac-dialog {
+  width: min(440px, 100%);
+  max-height: min(520px, calc(100vh - 40px));
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-  max-height: 260px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+
+.ts-ac-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ts-ac-dialog-head h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.ts-ac-dialog-search {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ts-ac-dialog-search input {
+  width: 100%;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+
+.ts-ac-dialog-search input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ts-ac-dialog-body {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
+  padding: 8px;
+}
+
+.ts-ac-dialog-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ts-ac-empty {
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .ts-ac-option {
@@ -2769,7 +2840,7 @@ select {
   align-items: flex-start;
   gap: 2px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -2780,7 +2851,7 @@ select {
 }
 
 .ts-ac-option strong {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .ts-ac-option span {

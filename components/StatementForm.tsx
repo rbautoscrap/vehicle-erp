@@ -262,7 +262,7 @@ export function StatementForm({
             value={values.recipient.company}
             recipients={recipients}
             required
-            placeholder="상호 입력 또는 저장된 거래처 선택"
+            placeholder="상호명 직접 입력"
             onChange={(company) =>
               setValues((v) => ({
                 ...v,
