@@ -9,7 +9,11 @@ import {
   StatementForm,
   type StatementFormValues,
 } from "@/components/StatementForm";
-import type { BankAccount, TransactionStatement } from "@/lib/statements";
+import type {
+  BankAccount,
+  StatementRecipientContact,
+  TransactionStatement,
+} from "@/lib/statements";
 
 export default function AdminStatementEditPage() {
   const params = useParams();
@@ -18,6 +22,7 @@ export default function AdminStatementEditPage() {
   const id = String(params.id);
   const [statement, setStatement] = useState<TransactionStatement | null>(null);
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [recipients, setRecipients] = useState<StatementRecipientContact[]>([]);
   const [notFound, setNotFound] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -33,6 +38,7 @@ export default function AdminStatementEditPage() {
     const data = await res.json();
     setStatement(data.statement);
     setAccounts(data.accounts || []);
+    setRecipients(data.recipients || []);
   }, [id]);
 
   useEffect(() => {
@@ -62,6 +68,7 @@ export default function AdminStatementEditPage() {
       }
       setStatement(data.statement);
       setMessage("저장되었습니다.");
+      await load();
     } catch {
       setError("서버에 연결하지 못했습니다.");
     } finally {
@@ -111,6 +118,7 @@ export default function AdminStatementEditPage() {
         mode="edit"
         initial={statement}
         accounts={accounts}
+        recipients={recipients}
         saving={saving}
         error={error}
         onSubmit={onSubmit}

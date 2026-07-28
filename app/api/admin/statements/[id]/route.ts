@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/auth";
 import {
+  listStatementRecipients,
   readStore,
+  upsertStatementRecipient,
   writeStore,
   type TransactionStatement,
 } from "@/lib/db";
@@ -44,6 +46,7 @@ export async function GET(_req: NextRequest, ctx: Ctx) {
   return NextResponse.json({
     statement: normalizeStatement(statement),
     accounts: store.bank_accounts,
+    recipients: listStatementRecipients(store),
   });
 }
 
@@ -94,6 +97,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
         return;
       }
       statement.recipient = recipient;
+      upsertStatementRecipient(store, recipient);
     }
 
     if (body.items != null) {

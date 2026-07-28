@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/auth";
 import {
   allocateStatementNumber,
+  listStatementRecipients,
   readStore,
+  upsertStatementRecipient,
   writeStore,
   type TransactionStatement,
 } from "@/lib/db";
@@ -36,7 +38,8 @@ export async function GET() {
     b.issued_at.localeCompare(a.issued_at) || b.id - a.id
   );
   const accounts = store.bank_accounts;
-  return NextResponse.json({ statements, accounts });
+  const recipients = listStatementRecipients(store);
+  return NextResponse.json({ statements, accounts, recipients });
 }
 
 export async function POST(req: NextRequest) {
@@ -111,6 +114,7 @@ export async function POST(req: NextRequest) {
     // Ensure totals are consistent (amounts already rounded)
     void statementSupplyTotal(statement.items);
     store.statements.push(statement);
+    upsertStatementRecipient(store, recipient);
     created = statement;
   });
 

@@ -36,6 +36,19 @@ export type StatementParty = {
   address: string;
 };
 
+/** Saved trading partners for recipient autocomplete */
+export type StatementRecipientContact = {
+  id: number;
+  company: string;
+  contact_person: string;
+  contact_phone: string;
+  address: string;
+  use_count: number;
+  last_used_at: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type TransactionStatement = {
   id: number;
   number: string;
@@ -99,6 +112,28 @@ export function normalizeParty(raw?: Partial<StatementParty> | null): StatementP
     contact_phone: contactPhone,
     address: String(raw?.address || "").trim(),
   };
+}
+
+export function normalizeRecipientContact(
+  raw: Partial<StatementRecipientContact> & { id: number }
+): StatementRecipientContact {
+  const now = new Date().toISOString();
+  const useCount = Number(raw.use_count);
+  return {
+    id: raw.id,
+    company: String(raw.company || "").trim(),
+    contact_person: String(raw.contact_person || "").trim(),
+    contact_phone: String(raw.contact_phone || "").trim(),
+    address: String(raw.address || "").trim(),
+    use_count: Number.isFinite(useCount) && useCount > 0 ? Math.floor(useCount) : 1,
+    last_used_at: String(raw.last_used_at || raw.updated_at || raw.created_at || now),
+    created_at: String(raw.created_at || now),
+    updated_at: String(raw.updated_at || now),
+  };
+}
+
+export function recipientContactKey(company: string) {
+  return company.trim().toLowerCase().replace(/\s+/g, "");
 }
 
 export function normalizeBankAccount(

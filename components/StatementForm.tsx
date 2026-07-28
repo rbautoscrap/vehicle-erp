@@ -5,6 +5,7 @@ import type {
   BankAccount,
   StatementItem,
   StatementParty,
+  StatementRecipientContact,
   TransactionStatement,
 } from "@/lib/statements";
 import {
@@ -22,6 +23,7 @@ import {
 } from "@/lib/statements";
 import { StatementDocument } from "@/components/StatementDocument";
 import { StatementToolbar } from "@/components/StatementToolbar";
+import { RecipientAutocomplete } from "@/components/RecipientAutocomplete";
 import type { StatementLocale } from "@/lib/statementI18n";
 
 export type StatementFormValues = {
@@ -38,6 +40,7 @@ type Props = {
   mode: "create" | "edit";
   initial?: TransactionStatement | null;
   accounts: BankAccount[];
+  recipients?: StatementRecipientContact[];
   saving?: boolean;
   error?: string;
   onSubmit: (values: StatementFormValues) => void | Promise<void>;
@@ -99,6 +102,7 @@ export function StatementForm({
   mode,
   initial,
   accounts,
+  recipients = [],
   saving,
   error,
   onSubmit,
@@ -254,17 +258,29 @@ export function StatementForm({
         <h2 className="ts-section-title">공급받는자</h2>
         <div className="field">
           <label htmlFor="recipient_company">상호 *</label>
-          <input
-            id="recipient_company"
-            required
+          <RecipientAutocomplete
             value={values.recipient.company}
-            onChange={(e) =>
+            recipients={recipients}
+            required
+            placeholder="상호 입력 또는 저장된 거래처 선택"
+            onChange={(company) =>
               setValues((v) => ({
                 ...v,
-                recipient: { ...v.recipient, company: e.target.value },
+                recipient: { ...v.recipient, company },
               }))
             }
-            placeholder="폐차장·업체 상호명"
+            onSelect={(r) =>
+              setValues((v) => ({
+                ...v,
+                recipient: {
+                  ...v.recipient,
+                  company: r.company,
+                  contact_person: r.contact_person,
+                  contact_phone: r.contact_phone,
+                  address: r.address,
+                },
+              }))
+            }
           />
         </div>
         <div className="field-row">

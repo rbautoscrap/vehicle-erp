@@ -11,8 +11,11 @@ import { normalizeSaleType } from "@/lib/saleTypes";
 import {
   DEFAULT_BANK_ACCOUNTS,
   normalizeBankAccount,
+  normalizeRecipientContact,
   normalizeStatement,
+  recipientContactKey,
   type BankAccount,
+  type StatementRecipientContact,
   type TransactionStatement,
 } from "@/lib/statements";
 import { toServablePhotoUrl } from "@/lib/uploads";
@@ -133,11 +136,13 @@ type Store = {
   fx_rates: FxRates;
   bank_accounts: BankAccount[];
   statements: TransactionStatement[];
+  statement_recipients: StatementRecipientContact[];
   nextUserId: number;
   nextAuctionId: number;
   nextBidId: number;
   nextBankAccountId: number;
   nextStatementId: number;
+  nextStatementRecipientId: number;
   /** Daily sequence seed for TS-YYYYMMDD-#### numbers */
   nextStatementSeq: number;
   statementSeqDate: string;
@@ -172,11 +177,13 @@ function defaultStore(): Store {
       })
     ),
     statements: [],
+    statement_recipients: [],
     nextUserId: 2,
     nextAuctionId: 1,
     nextBidId: 1,
     nextBankAccountId: DEFAULT_BANK_ACCOUNTS.length + 1,
     nextStatementId: 1,
+    nextStatementRecipientId: 1,
     nextStatementSeq: 1,
     statementSeqDate: "",
   };
@@ -311,6 +318,15 @@ function ensureStore(): Store {
         normalizeStatement(s as Partial<TransactionStatement> & { id: number })
       )
     : [];
+  parsed.statement_recipients = Array.isArray(parsed.statement_recipients)
+    ? parsed.statement_recipients
+        .map((r) =>
+          normalizeRecipientContact(
+            r as Partial<StatementRecipientContact> & { id: number }
+          )
+        )
+        .filter((r) => r.company)
+    : [];
   parsed.nextUserId = Number(parsed.nextUserId) || parsed.users.length + 1;
   parsed.nextAuctionId = Number(parsed.nextAuctionId) || 1;
   parsed.nextBidId = Number(parsed.nextBidId) || 1;
@@ -320,8 +336,53 @@ function ensureStore(): Store {
   parsed.nextStatementId =
     Number(parsed.nextStatementId) ||
     Math.max(0, ...parsed.statements.map((s) => s.id)) + 1;
+  parsed.nextStatementRecipientId =
+    Number(parsed.nextStatementRecipientId) ||
+    Math.max(0, ...parsed.statement_recipients.map((r) => r.id)) + 1;
   parsed.nextStatementSeq = Number(parsed.nextStatementSeq) || 1;
   parsed.statementSeqDate = String(parsed.statementSeqDate || "");
+
+  // Seed recipient contacts from past statements once
+  if (parsed.statement_recipients.length === 0 && parsed.statements.length > 0) {
+    const byKey = new Map<string, StatementRecipientContact>();
+    for (const s of parsed.statements) {
+      const company =
+        s.recipient.company?.trim() || s.recipient.name?.trim() || "";
+      if (!company) continue;
+      const key = recipientContactKey(company);
+      const existing = byKey.get(key);
+      const usedAt = s.issued_at || s.updated_at || s.created_at;
+      if (existing) {
+        existing.use_count += 1;
+        if (usedAt > existing.last_used_at) {
+          existing.last_used_at = usedAt;
+          existing.contact_person =
+            s.recipient.contact_person || existing.contact_person;
+          existing.contact_phone =
+            s.recipient.contact_phone || existing.contact_phone;
+          existing.address = s.recipient.address || existing.address;
+          existing.updated_at = usedAt;
+        }
+      } else {
+        byKey.set(
+          key,
+          normalizeRecipientContact({
+            id: parsed.nextStatementRecipientId++,
+            company,
+            contact_person: s.recipient.contact_person,
+            contact_phone: s.recipient.contact_phone,
+            address: s.recipient.address,
+            use_count: 1,
+            last_used_at: usedAt,
+            created_at: usedAt,
+            updated_at: usedAt,
+          })
+        );
+      }
+    }
+    parsed.statement_recipients = [...byKey.values()];
+    needsSave = true;
+  }
 
   if (!parsed.users.some((u) => u.role === "admin")) {
     parsed.users.push({
@@ -492,4 +553,59 @@ export function allocateStatementNumber(
   return `TS-${day}-${String(seq).padStart(4, "0")}`;
 }
 
-export type { BankAccount, TransactionStatement };
+/** Upsert recipient contact for autocomplete (mutates store). */
+export function upsertStatementRecipient(
+  store: Store,
+  recipient: {
+    company: string;
+    contact_person?: string;
+    contact_phone?: string;
+    address?: string;
+  }
+): StatementRecipientContact | null {
+  const company = String(recipient.company || "").trim();
+  if (!company) return null;
+  const now = new Date().toISOString();
+  const key = recipientContactKey(company);
+  const existing = store.statement_recipients.find(
+    (r) => recipientContactKey(r.company) === key
+  );
+  if (existing) {
+    existing.company = company;
+    if (recipient.contact_person?.trim()) {
+      existing.contact_person = recipient.contact_person.trim();
+    }
+    if (recipient.contact_phone?.trim()) {
+      existing.contact_phone = recipient.contact_phone.trim();
+    }
+    if (recipient.address?.trim()) {
+      existing.address = recipient.address.trim();
+    }
+    existing.use_count += 1;
+    existing.last_used_at = now;
+    existing.updated_at = now;
+    return existing;
+  }
+  const created = normalizeRecipientContact({
+    id: store.nextStatementRecipientId++,
+    company,
+    contact_person: recipient.contact_person,
+    contact_phone: recipient.contact_phone,
+    address: recipient.address,
+    use_count: 1,
+    last_used_at: now,
+    created_at: now,
+    updated_at: now,
+  });
+  store.statement_recipients.push(created);
+  return created;
+}
+
+export function listStatementRecipients(store = readStore()) {
+  return [...store.statement_recipients].sort((a, b) => {
+    if (b.use_count !== a.use_count) return b.use_count - a.use_count;
+    return b.last_used_at.localeCompare(a.last_used_at);
+  });
+}
+
+export type { BankAccount, TransactionStatement, StatementRecipientContact };

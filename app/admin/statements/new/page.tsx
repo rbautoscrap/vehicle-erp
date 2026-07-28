@@ -9,21 +9,29 @@ import {
   StatementForm,
   type StatementFormValues,
 } from "@/components/StatementForm";
-import type { BankAccount } from "@/lib/statements";
+import type { BankAccount, StatementRecipientContact } from "@/lib/statements";
 
 export default function AdminStatementNewPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [recipients, setRecipients] = useState<StatementRecipientContact[]>([]);
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const loadAccounts = useCallback(async () => {
-    const res = await fetch("/api/admin/bank-accounts");
-    if (res.ok) {
-      const data = await res.json();
+  const load = useCallback(async () => {
+    const [accRes, recRes] = await Promise.all([
+      fetch("/api/admin/bank-accounts"),
+      fetch("/api/admin/statement-recipients"),
+    ]);
+    if (accRes.ok) {
+      const data = await accRes.json();
       setAccounts(data.accounts || []);
+    }
+    if (recRes.ok) {
+      const data = await recRes.json();
+      setRecipients(data.recipients || []);
     }
     setReady(true);
   }, []);
@@ -35,8 +43,8 @@ export default function AdminStatementNewPage() {
   }, [loading, user, router]);
 
   useEffect(() => {
-    if (user?.role === "admin") void loadAccounts();
-  }, [user, loadAccounts]);
+    if (user?.role === "admin") void load();
+  }, [user, load]);
 
   async function onSubmit(values: StatementFormValues) {
     setError("");
@@ -77,12 +85,13 @@ export default function AdminStatementNewPage() {
         </Link>
       </div>
       <p className="page-desc">
-        거래처·품목·입금 계좌를 입력한 뒤 저장하세요. 오른쪽(또는 하단)
-        미리보기로 인쇄용 명세서를 확인할 수 있습니다.
+        거래처·품목·입금 계좌를 입력한 뒤 저장하세요. 공급받는자는 저장 시
+        자주 쓰는 거래처로 등록되어 다음부터 자동완성됩니다.
       </p>
       <StatementForm
         mode="create"
         accounts={accounts}
+        recipients={recipients}
         saving={saving}
         error={error}
         onSubmit={onSubmit}
