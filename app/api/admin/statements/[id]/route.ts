@@ -96,8 +96,8 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
 
     if (body.recipient != null) {
       const recipient = normalizeParty(body.recipient);
-      if (!recipient.name) {
-        outcome.error = "공급받는자 이름을 입력해 주세요.";
+      if (!recipient.company) {
+        outcome.error = "공급받는자 상호를 입력해 주세요.";
         return;
       }
       statement.recipient = recipient;

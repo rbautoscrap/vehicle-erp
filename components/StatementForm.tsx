@@ -59,11 +59,17 @@ function defaultValues(
     if (!supplier.address?.trim()) {
       supplier.address = DEFAULT_SUPPLIER_ADDRESS;
     }
+    const recipient = { ...initial.recipient };
+    // Legacy: name was required; prefer company for business recipients
+    if (!recipient.company?.trim() && recipient.name?.trim()) {
+      recipient.company = recipient.name;
+      recipient.name = "";
+    }
     return {
       issued_at: toDateInputValue(initial.issued_at),
       currency: initial.currency,
       supplier,
-      recipient: { ...initial.recipient },
+      recipient,
       items:
         initial.items.length > 0
           ? initial.items.map((i) => ({ ...i }))
@@ -274,23 +280,10 @@ export function StatementForm({
         <h2 className="ts-section-title">공급받는자</h2>
         <div className="field-row">
           <div className="field">
-            <label htmlFor="recipient_name">성명 *</label>
-            <input
-              id="recipient_name"
-              required
-              value={values.recipient.name}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  recipient: { ...v.recipient, name: e.target.value },
-                }))
-              }
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="recipient_company">상호</label>
+            <label htmlFor="recipient_company">상호 *</label>
             <input
               id="recipient_company"
+              required
               value={values.recipient.company}
               onChange={(e) =>
                 setValues((v) => ({
@@ -298,6 +291,21 @@ export function StatementForm({
                   recipient: { ...v.recipient, company: e.target.value },
                 }))
               }
+              placeholder="폐차장·업체 상호명"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="recipient_name">성명</label>
+            <input
+              id="recipient_name"
+              value={values.recipient.name}
+              onChange={(e) =>
+                setValues((v) => ({
+                  ...v,
+                  recipient: { ...v.recipient, name: e.target.value },
+                }))
+              }
+              placeholder="담당자 개인 성명 (선택)"
             />
           </div>
         </div>
@@ -375,6 +383,8 @@ export function StatementForm({
                   <td>
                     <input
                       aria-label={`품목 ${idx + 1}`}
+                      className="notranslate"
+                      translate="no"
                       value={item.name}
                       onChange={(e) =>
                         updateItem(item.id, { name: e.target.value })
@@ -386,6 +396,8 @@ export function StatementForm({
                   <td>
                     <input
                       aria-label={`상세 ${idx + 1}`}
+                      className="notranslate"
+                      translate="no"
                       value={item.details}
                       onChange={(e) =>
                         updateItem(item.id, { details: e.target.value })

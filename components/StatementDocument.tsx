@@ -37,7 +37,8 @@ export function StatementDocument({
   return (
     <article
       id={documentId}
-      className="ts-doc"
+      className="ts-doc notranslate"
+      translate="no"
       aria-label={t.title}
       lang={locale === "en" ? "en" : "ko"}
     >
@@ -103,13 +104,17 @@ export function StatementDocument({
           <h2>{t.recipient}</h2>
           <dl>
             <div>
-              <dt>{t.name}</dt>
-              <dd>{statement.recipient.name || "—"}</dd>
+              <dt>{t.tradeName}</dt>
+              <dd className="notranslate" translate="no">
+                {statement.recipient.company || "—"}
+              </dd>
             </div>
-            {statement.recipient.company && (
+            {statement.recipient.name && (
               <div>
-                <dt>{t.tradeName}</dt>
-                <dd>{statement.recipient.company}</dd>
+                <dt>{t.name}</dt>
+                <dd className="notranslate" translate="no">
+                  {statement.recipient.name}
+                </dd>
               </div>
             )}
             {statement.recipient.contact_person && (
@@ -146,8 +151,12 @@ export function StatementDocument({
         <tbody>
           {statement.items.map((item) => (
             <tr key={item.id}>
-              <td>{item.name}</td>
-              <td className="ts-muted">{item.details || "—"}</td>
+              <td className="notranslate" translate="no">
+                {item.name}
+              </td>
+              <td className="ts-muted notranslate" translate="no">
+                {item.details || "—"}
+              </td>
               <td className="ts-num">{item.quantity}</td>
               <td className="ts-num">
                 {formatStatementMoney(item.amount * item.quantity, currency)}

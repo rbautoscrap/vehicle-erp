@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
       ? null
       : Number(bankAccountIdRaw);
 
-  if (!recipient.name) {
+  if (!recipient.company) {
     return NextResponse.json(
-      { error: "공급받는자 이름을 입력해 주세요." },
+      { error: "공급받는자 상호를 입력해 주세요." },
       { status: 400 }
     );
   }

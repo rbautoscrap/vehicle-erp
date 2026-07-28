@@ -139,7 +139,7 @@ export default function AdminStatementsPage() {
                 <tr>
                   <th className="ts-list-no">명세서 번호</th>
                   <th className="ts-list-date">발행일</th>
-                  <th className="ts-list-name">공급받는자</th>
+                  <th className="ts-list-name">상호</th>
                   <th className="ts-list-amount">합계</th>
                   <th className="ts-list-cur">통화</th>
                   <th className="ts-list-items">품목</th>
@@ -161,8 +161,8 @@ export default function AdminStatementsPage() {
                       <td className="ts-list-date">
                         {formatStatementDate(s.issued_at)}
                       </td>
-                      <td className="ts-list-name" title={s.recipient.name}>
-                        {s.recipient.name || "—"}
+                      <td className="ts-list-name" title={s.recipient.company || s.recipient.name}>
+                        {s.recipient.company || s.recipient.name || "—"}
                       </td>
                       <td className="ts-list-amount">
                         {formatStatementMoney(total, s.currency)}
