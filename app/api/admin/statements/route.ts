@@ -6,7 +6,6 @@ import {
   writeStore,
   type TransactionStatement,
 } from "@/lib/db";
-import { isBidCurrency } from "@/lib/currency";
 import {
   DEFAULT_SUPPLIER,
   dateInputToIso,
@@ -45,7 +44,7 @@ export async function POST(req: NextRequest) {
   if (session instanceof NextResponse) return session;
 
   const body = await req.json().catch(() => ({}));
-  const currency = isBidCurrency(body.currency) ? body.currency : "KRW";
+  const currency = "KRW" as const;
   const items = parseItems(body.items);
   const recipient = normalizeParty(body.recipient);
   const supplier = normalizeParty(body.supplier || DEFAULT_SUPPLIER);

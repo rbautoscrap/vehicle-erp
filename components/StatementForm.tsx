@@ -1,8 +1,6 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import type { BidCurrency } from "@/lib/currency";
-import { CURRENCIES } from "@/lib/currency";
 import type {
   BankAccount,
   StatementItem,
@@ -28,7 +26,7 @@ import type { StatementLocale } from "@/lib/statementI18n";
 
 export type StatementFormValues = {
   issued_at: string;
-  currency: BidCurrency;
+  currency: "KRW";
   supplier: StatementParty;
   recipient: StatementParty;
   items: StatementItem[];
@@ -67,7 +65,7 @@ function defaultValues(
     recipient.name = "";
     return {
       issued_at: toDateInputValue(initial.issued_at),
-      currency: initial.currency,
+      currency: "KRW",
       supplier,
       recipient,
       items:
@@ -118,7 +116,7 @@ export function StatementForm({
       id: initial?.id ?? 0,
       number: initial?.number || "TS-PREVIEW-0000",
       issued_at: dateInputToIso(values.issued_at),
-      currency: values.currency,
+      currency: "KRW",
       supplier: { ...values.supplier, phone: FIXED_SUPPLIER_PHONE },
       recipient: values.recipient,
       items: values.items,
@@ -161,6 +159,7 @@ export function StatementForm({
     e.preventDefault();
     void onSubmit({
       ...values,
+      currency: "KRW",
       supplier: { ...values.supplier, phone: FIXED_SUPPLIER_PHONE },
     });
   }
@@ -168,42 +167,17 @@ export function StatementForm({
   return (
     <div className="ts-layout">
       <form className="form ts-form" onSubmit={handleSubmit}>
-        <div className="field-row">
-          <div className="field">
-            <label htmlFor="issued_at">발행일</label>
-            <input
-              id="issued_at"
-              type="date"
-              required
-              value={values.issued_at}
-              onChange={(e) =>
-                setValues((v) => ({ ...v, issued_at: e.target.value }))
-              }
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="currency">통화</label>
-            <select
-              id="currency"
-              value={values.currency}
-              onChange={(e) =>
-                setValues((v) => ({
-                  ...v,
-                  currency: e.target.value as BidCurrency,
-                }))
-              }
-            >
-              {[...CURRENCIES]
-                .sort((a, b) =>
-                  a.code === "KRW" ? -1 : b.code === "KRW" ? 1 : 0
-                )
-                .map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-            </select>
-          </div>
+        <div className="field">
+          <label htmlFor="issued_at">발행일</label>
+          <input
+            id="issued_at"
+            type="date"
+            required
+            value={values.issued_at}
+            onChange={(e) =>
+              setValues((v) => ({ ...v, issued_at: e.target.value }))
+            }
+          />
         </div>
 
         {mode === "edit" && initial?.number && (
@@ -408,7 +382,7 @@ export function StatementForm({
                       aria-label={`단가 ${idx + 1}`}
                       type="number"
                       min={0}
-                      step={values.currency === "KRW" ? 1 : 0.01}
+                      step={1}
                       value={item.amount || ""}
                       onChange={(e) =>
                         updateItem(item.id, {

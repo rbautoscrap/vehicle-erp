@@ -5,7 +5,6 @@ import {
   writeStore,
   type TransactionStatement,
 } from "@/lib/db";
-import { isBidCurrency } from "@/lib/currency";
 import {
   DEFAULT_SUPPLIER,
   dateInputToIso,
@@ -69,13 +68,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
       return;
     }
 
-    if (body.currency != null) {
-      if (!isBidCurrency(body.currency)) {
-        outcome.error = "통화가 올바르지 않습니다.";
-        return;
-      }
-      statement.currency = body.currency;
-    }
+    statement.currency = "KRW";
 
     if (body.issued_at != null) {
       const issuedRaw = String(body.issued_at).trim();
