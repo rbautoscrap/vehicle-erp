@@ -18,6 +18,10 @@ import {
   type StatementRecipientContact,
   type TransactionStatement,
 } from "@/lib/statements";
+import {
+  normalizeOverseasInvoice,
+  type OverseasInvoice,
+} from "@/lib/overseasInvoices";
 import { toServablePhotoUrl } from "@/lib/uploads";
 
 const dataDir = path.join(process.cwd(), "data");
@@ -137,6 +141,7 @@ type Store = {
   bank_accounts: BankAccount[];
   statements: TransactionStatement[];
   statement_recipients: StatementRecipientContact[];
+  overseas_invoices: OverseasInvoice[];
   nextUserId: number;
   nextAuctionId: number;
   nextBidId: number;
@@ -147,6 +152,10 @@ type Store = {
   nextStatementSeq: number;
   /** @deprecated Kept for store compatibility; no longer used for numbering */
   statementSeqDate: string;
+  nextOverseasInvoiceId: number;
+  /** Daily sequence date key YYYYMMDD for overseas invoices */
+  overseasInvoiceSeqDate: string;
+  nextOverseasInvoiceSeq: number;
 };
 
 function defaultStore(): Store {
@@ -179,6 +188,7 @@ function defaultStore(): Store {
     ),
     statements: [],
     statement_recipients: [],
+    overseas_invoices: [],
     nextUserId: 2,
     nextAuctionId: 1,
     nextBidId: 1,
@@ -187,6 +197,9 @@ function defaultStore(): Store {
     nextStatementRecipientId: 1,
     nextStatementSeq: 1,
     statementSeqDate: "",
+    nextOverseasInvoiceId: 1,
+    overseasInvoiceSeqDate: "",
+    nextOverseasInvoiceSeq: 1,
   };
 }
 
@@ -353,6 +366,17 @@ function ensureStore(): Store {
       parsed.nextStatementSeq = maxRb + 1;
     }
   }
+
+  parsed.overseas_invoices = Array.isArray(parsed.overseas_invoices)
+    ? parsed.overseas_invoices.map((inv) =>
+        normalizeOverseasInvoice(inv as Partial<OverseasInvoice> & { id: number })
+      )
+    : [];
+  parsed.nextOverseasInvoiceId =
+    Number(parsed.nextOverseasInvoiceId) ||
+    Math.max(0, ...parsed.overseas_invoices.map((i) => i.id)) + 1;
+  parsed.overseasInvoiceSeqDate = String(parsed.overseasInvoiceSeqDate || "");
+  parsed.nextOverseasInvoiceSeq = Number(parsed.nextOverseasInvoiceSeq) || 1;
 
   // Seed recipient contacts from past statements once
   if (parsed.statement_recipients.length === 0 && parsed.statements.length > 0) {
@@ -556,6 +580,21 @@ export function allocateStatementNumber(store: Store): string {
   return `RB-Public-${String(seq).padStart(4, "0")}`;
 }
 
+/** Allocate next YYYYMMDD-N overseas invoice number (mutates store counters). */
+export function allocateOverseasInvoiceNumber(
+  store: Store,
+  issuedAt = new Date()
+): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const day = `${issuedAt.getFullYear()}${pad(issuedAt.getMonth() + 1)}${pad(issuedAt.getDate())}`;
+  if (store.overseasInvoiceSeqDate !== day) {
+    store.overseasInvoiceSeqDate = day;
+    store.nextOverseasInvoiceSeq = 1;
+  }
+  const seq = store.nextOverseasInvoiceSeq++;
+  return `${day}-${seq}`;
+}
+
 /** Upsert recipient contact for autocomplete (mutates store). */
 export function upsertStatementRecipient(
   store: Store,
@@ -611,4 +650,9 @@ export function listStatementRecipients(store = readStore()) {
   });
 }
 
-export type { BankAccount, TransactionStatement, StatementRecipientContact };
+export type {
+  BankAccount,
+  TransactionStatement,
+  StatementRecipientContact,
+};
+export type { OverseasInvoice };

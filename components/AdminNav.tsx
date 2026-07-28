@@ -13,6 +13,7 @@ const LINKS = [
   { href: "/admin/users", label: "회원 관리" },
   { href: "/admin/analytics", label: "회원 분석" },
   { href: "/admin/statements", label: "거래명세서" },
+  { href: "/admin/overseas-invoices", label: "해외 인보이스" },
   { href: "/admin/backup", label: "백업/복원" },
 ];
 
@@ -32,9 +33,13 @@ export function AdminNav() {
               : link.href === "/admin/statements"
                 ? pathname === "/admin/statements" ||
                   pathname.startsWith("/admin/statements/")
-              : link.exact
-                ? pathname === link.href
-                : pathname === link.href || pathname.startsWith(link.href + "/");
+                : link.href === "/admin/overseas-invoices"
+                  ? pathname === "/admin/overseas-invoices" ||
+                    pathname.startsWith("/admin/overseas-invoices/")
+                  : link.exact
+                    ? pathname === link.href
+                    : pathname === link.href ||
+                      pathname.startsWith(link.href + "/");
 
         return (
           <Link

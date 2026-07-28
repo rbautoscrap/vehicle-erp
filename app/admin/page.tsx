@@ -65,6 +65,10 @@ export default function AdminHomePage() {
           <strong>거래명세서</strong>
           <span>거래명세서를 작성하고 조회·관리합니다.</span>
         </Link>
+        <Link href="/admin/overseas-invoices" className="admin-card">
+          <strong>해외 인보이스</strong>
+          <span>해외 거래용 Commercial Invoice를 작성합니다.</span>
+        </Link>
         <Link href="/admin/backup" className="admin-card">
           <strong>백업 / 복원</strong>
           <span>재배포 전 ZIP 백업, 배포 후 한 번에 복원합니다.</span>
