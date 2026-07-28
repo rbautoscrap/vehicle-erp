@@ -2519,7 +2519,7 @@ select {
 }
 
 .ts-doc-watermark img {
-  width: min(72%, 420px);
+  width: min(92%, 640px);
   height: auto;
   opacity: 0.08;
   object-fit: contain;
