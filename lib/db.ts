@@ -143,8 +143,9 @@ type Store = {
   nextBankAccountId: number;
   nextStatementId: number;
   nextStatementRecipientId: number;
-  /** Daily sequence seed for TS-YYYYMMDD-#### numbers */
+  /** Global sequence for RB-Public-#### numbers */
   nextStatementSeq: number;
+  /** @deprecated Kept for store compatibility; no longer used for numbering */
   statementSeqDate: string;
 };
 
@@ -341,6 +342,17 @@ function ensureStore(): Store {
     Math.max(0, ...parsed.statement_recipients.map((r) => r.id)) + 1;
   parsed.nextStatementSeq = Number(parsed.nextStatementSeq) || 1;
   parsed.statementSeqDate = String(parsed.statementSeqDate || "");
+  // Keep sequence ahead of any existing RB-Public-#### numbers
+  {
+    let maxRb = 0;
+    for (const s of parsed.statements) {
+      const m = /^RB-Public-(\d+)$/i.exec(String(s.number || "").trim());
+      if (m) maxRb = Math.max(maxRb, Number(m[1]));
+    }
+    if (maxRb >= parsed.nextStatementSeq) {
+      parsed.nextStatementSeq = maxRb + 1;
+    }
+  }
 
   // Seed recipient contacts from past statements once
   if (parsed.statement_recipients.length === 0 && parsed.statements.length > 0) {
@@ -538,19 +550,10 @@ export function getWinningBid(auctionId: number, store = readStore()) {
   return highestBid(bids);
 }
 
-/** Allocate next TS-YYYYMMDD-#### number (mutates store counters). */
-export function allocateStatementNumber(
-  store: Store,
-  issuedAt = new Date()
-): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const day = `${issuedAt.getFullYear()}${pad(issuedAt.getMonth() + 1)}${pad(issuedAt.getDate())}`;
-  if (store.statementSeqDate !== day) {
-    store.statementSeqDate = day;
-    store.nextStatementSeq = 1;
-  }
+/** Allocate next RB-Public-#### number (mutates store counters). */
+export function allocateStatementNumber(store: Store): string {
   const seq = store.nextStatementSeq++;
-  return `TS-${day}-${String(seq).padStart(4, "0")}`;
+  return `RB-Public-${String(seq).padStart(4, "0")}`;
 }
 
 /** Upsert recipient contact for autocomplete (mutates store). */

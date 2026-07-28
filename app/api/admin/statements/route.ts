@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     const now = new Date().toISOString();
     const statement = normalizeStatement({
       id: store.nextStatementId++,
-      number: allocateStatementNumber(store, issuedAt),
+      number: allocateStatementNumber(store),
       issued_at: issuedAt.toISOString(),
       currency,
       supplier: supplier.name ? supplier : DEFAULT_SUPPLIER,

@@ -120,7 +120,7 @@ export function StatementForm({
   const previewStatement: TransactionStatement = useMemo(
     () => ({
       id: initial?.id ?? 0,
-      number: initial?.number || "TS-PREVIEW-0000",
+      number: initial?.number || "RB-Public-0000",
       issued_at: dateInputToIso(values.issued_at),
       currency: "KRW",
       supplier: { ...values.supplier, phone: FIXED_SUPPLIER_PHONE },
