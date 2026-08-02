@@ -185,6 +185,35 @@ export default function AdminResultDetailPage() {
     }
   }
 
+  async function onDelete() {
+    if (!detail) return;
+    const a = detail.auction;
+    const label = a.title || `${a.year} ${a.vehicle_type}`.trim();
+    if (
+      !window.confirm(
+        `「${label}」 매물을 삭제할까요?\n\n입찰 내역·사진이 함께 삭제되며 복구할 수 없습니다.`
+      )
+    ) {
+      return;
+    }
+    setError("");
+    setMessage("");
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/auctions/${a.id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "매물 삭제에 실패했습니다.");
+        return;
+      }
+      router.push("/admin/results");
+    } catch {
+      setError("서버에 연결하지 못했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (loading || !user || user.role !== "admin") {
     return (
       <div className="app-shell">
@@ -234,6 +263,14 @@ export default function AdminResultDetailPage() {
           onClick={() => void onReopen()}
         >
           {saving ? "처리 중…" : "경매 재개"}
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger"
+          disabled={saving}
+          onClick={() => void onDelete()}
+        >
+          {saving ? "처리 중…" : "매물 삭제"}
         </button>
       </div>
 

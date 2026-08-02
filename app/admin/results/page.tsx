@@ -155,6 +155,35 @@ export default function AdminResultsPage() {
     );
   }
 
+  async function deleteAuction(row: ResultRow) {
+    const a = row.auction;
+    const label = a.title || `${a.year} ${a.vehicle_type}`.trim();
+    if (
+      !window.confirm(
+        `「${label}」 매물을 삭제할까요?\n\n입찰 내역·사진이 함께 삭제되며 복구할 수 없습니다.`
+      )
+    ) {
+      return;
+    }
+    setError("");
+    setMessage("");
+    setBusyId(a.id);
+    try {
+      const res = await fetch(`/api/auctions/${a.id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "매물 삭제에 실패했습니다.");
+        return;
+      }
+      setMessage("매물이 삭제되었습니다.");
+      await load();
+    } catch {
+      setError("서버에 연결하지 못했습니다.");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   if (loading || !user || user.role !== "admin") {
     return (
       <div className="app-shell">
@@ -292,6 +321,14 @@ export default function AdminResultsPage() {
                   <Link href={`/admin/products/${a.id}/edit`} className="btn">
                     잔존물 편집
                   </Link>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    disabled={busy}
+                    onClick={() => void deleteAuction(row)}
+                  >
+                    {busy ? "처리 중…" : "매물 삭제"}
+                  </button>
                 </div>
               </div>
             );
