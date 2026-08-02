@@ -48,6 +48,17 @@ function resultStatusBadge(status: string) {
   return "badge-upcoming";
 }
 
+function IconTrash() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"
+      />
+    </svg>
+  );
+}
+
 export default function AdminResultsPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
@@ -234,11 +245,23 @@ export default function AdminResultsPage() {
                       style={{ justifyContent: "space-between" }}
                     >
                       <h3>{a.title || `${a.year} ${a.vehicle_type}`.trim()}</h3>
-                      <span
-                        className={`badge ${resultStatusBadge(a.result_status)}`}
-                      >
-                        {resultStatusLabel(a.result_status)}
-                      </span>
+                      <div className="result-row-head-tools">
+                        <span
+                          className={`badge ${resultStatusBadge(a.result_status)}`}
+                        >
+                          {resultStatusLabel(a.result_status)}
+                        </span>
+                        <button
+                          type="button"
+                          className="result-delete-icon"
+                          title="매물 삭제"
+                          aria-label="매물 삭제"
+                          disabled={busy}
+                          onClick={() => void deleteAuction(row)}
+                        >
+                          <IconTrash />
+                        </button>
+                      </div>
                     </div>
                     <div
                       className="detail-price bid-amount"
@@ -323,11 +346,14 @@ export default function AdminResultsPage() {
                   </Link>
                   <button
                     type="button"
-                    className="btn btn-danger"
+                    className="btn btn-danger result-delete-btn"
                     disabled={busy}
+                    title="매물 삭제"
+                    aria-label="매물 삭제"
                     onClick={() => void deleteAuction(row)}
                   >
-                    {busy ? "처리 중…" : "매물 삭제"}
+                    <IconTrash />
+                    <span>{busy ? "삭제 중…" : "삭제"}</span>
                   </button>
                 </div>
               </div>

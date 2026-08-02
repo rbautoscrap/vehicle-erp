@@ -266,11 +266,19 @@ export default function AdminResultDetailPage() {
         </button>
         <button
           type="button"
-          className="btn btn-danger"
+          className="btn btn-danger result-delete-btn"
           disabled={saving}
+          title="매물 삭제"
+          aria-label="매물 삭제"
           onClick={() => void onDelete()}
         >
-          {saving ? "처리 중…" : "매물 삭제"}
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"
+            />
+          </svg>
+          <span>{saving ? "삭제 중…" : "삭제"}</span>
         </button>
       </div>
 

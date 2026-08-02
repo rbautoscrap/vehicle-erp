@@ -304,6 +304,43 @@ select {
   white-space: nowrap;
 }
 
+.result-row-head-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.result-delete-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #e8cfcf;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--danger);
+  cursor: pointer;
+}
+
+.result-delete-icon:hover:not(:disabled) {
+  background: #fdf2f2;
+  border-color: #d9a3a3;
+}
+
+.result-delete-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.result-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .auction-meta {
   display: flex;
   flex-wrap: wrap;
