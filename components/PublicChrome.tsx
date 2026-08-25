@@ -53,13 +53,13 @@ export function PublicHeader() {
               </Link>
             )
           )}
-          <Link
+          <a
             href="/login#login-panel"
             className="site-nav-login"
             onClick={() => setOpen(false)}
           >
             로그인
-          </Link>
+          </a>
         </nav>
       </div>
     </header>

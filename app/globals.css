@@ -108,6 +108,8 @@ a {
   word-break: keep-all;
   overflow-wrap: anywhere;
   font-synthesis: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .site-header {
@@ -293,7 +295,8 @@ a {
 }
 
 .site-form-table input,
-.site-form-table textarea {
+.site-form-table textarea,
+.site-form-table select {
   width: 100%;
   padding: 8px 10px;
   border: 1px solid #d8d8d8;
@@ -398,12 +401,26 @@ a {
 }
 
 #login-panel,
-#scrap,
-#usedcar,
-#export,
-#parts,
-#home {
+#scrap {
   scroll-margin-top: 88px;
+}
+
+.site-main-only {
+  flex: 1;
+}
+
+.site-login-target {
+  display: none;
+  padding: 0 16px 48px;
+}
+
+.site-login-target:target {
+  display: block;
+}
+
+.site-login-target .login-hero-panel {
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .site-page .login-hero-panel {
