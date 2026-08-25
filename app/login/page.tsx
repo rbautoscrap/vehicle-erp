@@ -14,7 +14,6 @@ type LiveTeaser = {
   fuel_type: string;
   sale_type: string;
   end_at: string;
-  thumb: string | null;
 };
 
 const FAQS = [
@@ -29,33 +28,6 @@ const FAQS = [
   {
     q: "폐차 신청 시 절차가 궁금하신가요?",
     a: "서류 구비 후 폐차의뢰 → 폐차비 감정 → 픽업/탁송 → 차량입고 → 폐차등록 → 국토교통부 온라인 말소. 말소 완료 후 ‘폐차량 입고 증명서’와 ‘자동차말소등록사실증명서’ 스캔본을 문자로 발송해 드립니다.",
-  },
-];
-
-const SERVICES = [
-  {
-    href: "#scrap",
-    icon: "/site/icon-scrap.png",
-    label: "폐차",
-    external: false,
-  },
-  {
-    href: "#usedcar",
-    icon: "/site/icon-usedcar.png",
-    label: "직영중고차",
-    external: false,
-  },
-  {
-    href: "http://rbauto.co.kr",
-    icon: "/site/icon-parts.png",
-    label: "친환경중고부품몰",
-    external: true,
-  },
-  {
-    href: "https://rbautotrade.com/",
-    icon: "/site/icon-export.png",
-    label: "쇼링수출",
-    external: true,
   },
 ];
 
@@ -157,147 +129,243 @@ export default function LoginPage() {
       <PublicHeader />
 
       <section className="site-hero" id="home">
-        <div className="site-hero-inner">
-          <p className="site-hero-kicker">정부정식 관허폐차사업소 알비오토 리싸이클링</p>
+        <div className="site-section-inner">
+          <p className="site-kicker">정부정식 관허폐차사업소</p>
           <h1 className="site-hero-title">RBAUTO ONE STOP SERVICE</h1>
-          <ul className="site-hero-cards">
-            {SERVICES.map((item) => (
-              <li key={item.label}>
-                {item.external ? (
-                  <a href={item.href} target="_blank" rel="noopener noreferrer">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.icon} alt="" />
-                    <strong>{item.label}</strong>
-                  </a>
-                ) : (
-                  <a href={item.href}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.icon} alt="" />
-                    <strong>{item.label}</strong>
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
+          <p className="site-hero-lead">
+            알비오토 리싸이클링 · 폐차 · 직영중고차 · 친환경중고부품 · 수출
+          </p>
         </div>
       </section>
 
-      <section className="site-section" id="scrap">
-        <div className="site-section-inner site-quote-layout">
-          <div className="site-quote-brand">
-            <p>전국에서 가장 높은 금액으로 안내 받으실 수 있습니다.</p>
-            <div className="site-quote-phone">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/rbauto-logo.png" alt="RBAUTO" />
-              <a href="tel:0415227327">041-522-7327</a>
-            </div>
-            <p className="site-quote-lead">
-              온라인으로 간편하게 폐차 문의를 해보세요.
-            </p>
-          </div>
-          {quoteDone ? (
-            <p className="site-quote-ok">정상적으로 접수되었습니다. 메일 창이 열리면 전송해 주세요.</p>
-          ) : (
-            <form className="site-quote" onSubmit={onQuote}>
-              <label>
-                차량번호 <span>*</span>
-                <input
-                  required
-                  value={quote.plate}
-                  onChange={(e) => setQuote({ ...quote, plate: e.target.value })}
-                />
-              </label>
-              <label>
-                연락처 <span>*</span>
-                <input
-                  required
-                  value={quote.phone}
-                  onChange={(e) => setQuote({ ...quote, phone: e.target.value })}
-                />
-              </label>
-              <label>
-                차량위치 <span>*</span>
-                <input
-                  required
-                  value={quote.location}
-                  onChange={(e) => setQuote({ ...quote, location: e.target.value })}
-                />
-              </label>
-              <label>
-                차량 특이사항
-                <textarea
-                  rows={4}
-                  value={quote.note}
-                  onChange={(e) => setQuote({ ...quote, note: e.target.value })}
-                />
-              </label>
-              <button className="site-quote-submit" type="submit">
-                견적문의
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
-      <section className="site-faq-band">
-        <div className="site-section-inner site-faq-layout">
-          <div>
-            <h2 className="site-heading">궁금한 점이 있으신가요?</h2>
-            <p>온라인으로 간편하게 자주 묻는 질문을 통해 확인해보세요</p>
-          </div>
-          <div className="site-faq">
-            {FAQS.map((item) => (
-              <details key={item.q}>
-                <summary>{item.q}</summary>
-                <p>{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="site-section site-section-alt" id="parts">
+      <section className="site-section">
         <div className="site-section-inner">
-          <h2 className="site-heading">친환경중고부품몰</h2>
-          <a
-            className="site-banner"
-            href="http://rbauto.co.kr"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/site/banner-parts.jpg" alt="" />
-            <div className="site-banner-copy">
-              <p>
-                전 차종을 아우르는 국내 최대 중고부품 쇼핑몰 알비오토에서 놀라운
-                가격으로 누구나 만족할 수 있는 새로운 경험을 제공해 드립니다.
-              </p>
-              <span>바로가기</span>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <section className="site-section" id="usedcar">
-        <div className="site-section-inner">
-          <h2 className="site-heading">직영중고차몰</h2>
-          <div className="site-usedcar-card">
-            <p>
-              믿을 수 있는 곳을 찾고 계신가요? 직영중고차 전문 RBAUTO와 함께 하세요.
-              최고의 조건과 합리적인 가격으로 다음 차량을 선택하실 수 있습니다.
-            </p>
-            <span>준비중</span>
+          <h2 className="site-heading">원스톱 서비스</h2>
+          <div className="site-table-wrap">
+            <table className="site-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>내용</th>
+                  <th>바로가기</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>폐차</th>
+                  <td>관허 폐차 · 감정 · 말소 대행</td>
+                  <td>
+                    <a href="#scrap">견적문의</a>
+                  </td>
+                </tr>
+                <tr>
+                  <th>직영중고차</th>
+                  <td>신뢰와 품질의 직영 매매</td>
+                  <td>
+                    <a href="#usedcar">안내</a>
+                  </td>
+                </tr>
+                <tr>
+                  <th>친환경중고부품몰</th>
+                  <td>전 차종 재활용 부품</td>
+                  <td>
+                    <a href="http://rbauto.co.kr" target="_blank" rel="noopener noreferrer">
+                      rbauto.co.kr
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <th>쇼링수출</th>
+                  <td>Only for export buyer</td>
+                  <td>
+                    <a href="https://rbautotrade.com/" target="_blank" rel="noopener noreferrer">
+                      rbautotrade.com
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
-      <section className="site-section site-section-alt" id="export">
+      <section className="site-section site-section-alt" id="scrap">
+        <div className="site-section-inner">
+          <h2 className="site-heading">폐차감정</h2>
+          <p className="site-lead">
+            온라인으로 간편하게 폐차 문의를 해보세요. 전국에서 가장 높은 금액으로
+            안내받으실 수 있습니다.
+          </p>
+          <div className="site-split">
+            <div className="site-table-wrap">
+              <table className="site-table">
+                <tbody>
+                  <tr>
+                    <th>문의전화</th>
+                    <td>
+                      <a href="tel:0415227327">041-522-7327</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>이메일</th>
+                    <td>
+                      <a href="mailto:rbautoscrap@naver.com">rbautoscrap@naver.com</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>안내</th>
+                    <td>차량번호, 연락처, 위치를 남겨 주시면 견적을 안내합니다.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {quoteDone ? (
+              <p className="site-quote-ok">정상적으로 접수되었습니다. 메일 창이 열리면 전송해 주세요.</p>
+            ) : (
+              <form className="site-quote" onSubmit={onQuote}>
+                <table className="site-table site-form-table">
+                  <tbody>
+                    <tr>
+                      <th>
+                        <label htmlFor="quote-plate">차량번호 *</label>
+                      </th>
+                      <td>
+                        <input
+                          id="quote-plate"
+                          required
+                          value={quote.plate}
+                          onChange={(e) => setQuote({ ...quote, plate: e.target.value })}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <label htmlFor="quote-phone">연락처 *</label>
+                      </th>
+                      <td>
+                        <input
+                          id="quote-phone"
+                          required
+                          value={quote.phone}
+                          onChange={(e) => setQuote({ ...quote, phone: e.target.value })}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <label htmlFor="quote-location">차량위치 *</label>
+                      </th>
+                      <td>
+                        <input
+                          id="quote-location"
+                          required
+                          value={quote.location}
+                          onChange={(e) => setQuote({ ...quote, location: e.target.value })}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>
+                        <label htmlFor="quote-note">차량 특이사항</label>
+                      </th>
+                      <td>
+                        <textarea
+                          id="quote-note"
+                          rows={3}
+                          value={quote.note}
+                          onChange={(e) => setQuote({ ...quote, note: e.target.value })}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button className="site-quote-submit" type="submit">
+                  견적문의
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section">
+        <div className="site-section-inner">
+          <h2 className="site-heading">자주 묻는 질문</h2>
+          <div className="site-table-wrap">
+            <table className="site-table site-faq-table">
+              <thead>
+                <tr>
+                  <th>질문</th>
+                  <th>답변</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FAQS.map((item) => (
+                  <tr key={item.q}>
+                    <th>{item.q}</th>
+                    <td>{item.a}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section site-section-alt" id="usedcar">
+        <div className="site-section-inner">
+          <h2 className="site-heading">사업 안내</h2>
+          <div className="site-table-wrap">
+            <table className="site-table">
+              <thead>
+                <tr>
+                  <th>사업</th>
+                  <th>안내</th>
+                  <th>상태</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="parts">
+                  <th>친환경중고부품몰</th>
+                  <td>
+                    전 차종을 아우르는 중고부품 쇼핑몰에서 합리적인 가격으로
+                    부품을 확인하실 수 있습니다.
+                  </td>
+                  <td>
+                    <a href="http://rbauto.co.kr" target="_blank" rel="noopener noreferrer">
+                      바로가기
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <th>직영중고차몰</th>
+                  <td>
+                    직영중고차 전문 RBAUTO와 함께 다음 차량을 선택하실 수 있습니다.
+                  </td>
+                  <td>준비중</td>
+                </tr>
+                <tr>
+                  <th>쇼링수출</th>
+                  <td>Our platform facilitates the export of cars from Korea.</td>
+                  <td>
+                    <a href="https://rbautotrade.com/" target="_blank" rel="noopener noreferrer">
+                      바로가기
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="site-section" id="export">
         <div className="site-section-inner site-split">
           <div>
             <h2 className="site-heading">수출경매</h2>
             <p className="site-export-lead">
               Only for Export buyer. You can bid at auctions you wanted to export.
-              Check crushed cars with our live auction.
             </p>
             <p className="login-live-note">미리보기 · 상세·입찰은 로그인 후 이용</p>
             {liveLoading && live.length === 0 ? (
@@ -305,46 +373,40 @@ export default function LoginPage() {
             ) : live.length === 0 ? (
               <p className="login-live-empty">현재 진행 중인 경매가 없습니다.</p>
             ) : (
-              <ul className="login-live-list">
-                {live.map((a) => (
-                  <li key={a.id}>
-                    <button
-                      type="button"
-                      className="login-live-item"
-                      onClick={requireLogin}
-                    >
-                      {a.thumb ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          className="login-live-thumb"
-                          src={a.thumb}
-                          alt=""
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="login-live-thumb login-live-thumb-empty">
-                          —
-                        </div>
-                      )}
-                      <div className="login-live-text">
-                        <strong>
-                          {a.year} {a.vehicle_type}
-                        </strong>
-                        <span className="login-live-meta">
-                          {a.sale_type ? saleTypeLabelEn(a.sale_type) : "—"}
-                          {" · "}
-                          {fuelTypeLabelEn(a.fuel_type)}
-                        </span>
-                        <span className="login-live-ends">
-                          Ends <Countdown endAt={a.end_at} />
-                        </span>
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="site-table-wrap">
+                <table className="site-table">
+                  <thead>
+                    <tr>
+                      <th>차량</th>
+                      <th>판매</th>
+                      <th>연료</th>
+                      <th>마감</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {live.map((a) => (
+                      <tr key={a.id}>
+                        <th>
+                          <button
+                            type="button"
+                            className="site-row-link"
+                            onClick={requireLogin}
+                          >
+                            {a.year} {a.vehicle_type}
+                          </button>
+                        </th>
+                        <td>{a.sale_type ? saleTypeLabelEn(a.sale_type) : "—"}</td>
+                        <td>{fuelTypeLabelEn(a.fuel_type)}</td>
+                        <td>
+                          <Countdown endAt={a.end_at} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
-            <p className="login-live-count" style={{ marginTop: 10 }}>
+            <p className="login-live-count">
               {liveLoading && live.length === 0 ? "…" : `Live ${totalLive}`}
             </p>
           </div>

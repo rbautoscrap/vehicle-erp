@@ -23,8 +23,8 @@ export function PublicHeader() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link href="/login" className="site-logo" onClick={() => setOpen(false)}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/rbauto-logo.png" alt="RBAUTO" />
+          <strong>RBAUTO</strong>
+          <span>주식회사 알비오토</span>
         </Link>
         <button
           type="button"
@@ -71,12 +71,8 @@ export function PublicFooter() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <div className="site-footer-brand">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/rbauto-logo.png" alt="RBAUTO" />
-          <div>
-            <strong>주식회사 알비오토</strong>
-            <p>정부정식 관허폐차사업소 · RBAUTO ONE STOP SERVICE</p>
-          </div>
+          <strong>주식회사 알비오토</strong>
+          <p>정부정식 관허폐차사업소 · RBAUTO ONE STOP SERVICE</p>
         </div>
         <div className="site-footer-links">
           <a href="http://rbauto.co.kr" target="_blank" rel="noopener noreferrer">

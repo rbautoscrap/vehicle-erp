@@ -130,14 +130,23 @@ a {
 
 .site-logo {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 8px;
   flex-shrink: 0;
+  line-height: 1.2;
 }
 
-.site-logo img {
-  height: 44px;
-  width: auto;
-  object-fit: contain;
+.site-logo strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.site-logo span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #667;
+  letter-spacing: -0.03em;
 }
 
 .site-nav {
@@ -183,94 +192,25 @@ a {
 }
 
 .site-hero {
-  position: relative;
-  min-height: 640px;
-  display: flex;
-  align-items: center;
-  color: #fff;
-  background:
-    linear-gradient(180deg, rgba(12, 22, 38, 0.22), rgba(12, 22, 38, 0.38)),
-    url("/site/hero-bg.jpg") center / cover no-repeat;
-  padding: 72px 16px 64px;
-}
-
-.site-hero-inner {
-  width: min(1080px, 100%);
-  margin: 0 auto;
-  text-align: center;
-}
-
-.site-hero-kicker {
-  margin: 0 0 8px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.45;
-  letter-spacing: -0.03em;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+  padding: 48px 16px 8px;
+  border-bottom: 1px solid #ececec;
 }
 
 .site-hero-title {
-  margin: 0 0 36px;
-  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  margin: 0 0 8px;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
   letter-spacing: 0.04em;
   font-weight: 800;
   line-height: 1.25;
   word-break: normal;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  color: #12325f;
 }
 
-.site-hero-cards {
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  width: 100%;
-}
-
-.site-hero-cards li {
-  min-width: 0;
-}
-
-.site-hero-cards a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 176px;
-  padding: 18px 10px 16px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
-  color: #1d4f91;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.site-hero-cards a:hover {
-  background: #fff;
-  transform: translateY(-2px);
-}
-
-.site-hero-cards img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.site-hero-cards strong {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 12px;
-  min-height: 2.5em;
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.04em;
-  color: #1a1a1a;
-  text-align: center;
+.site-hero-lead {
+  margin: 0 0 28px;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .site-section {
@@ -335,64 +275,27 @@ a {
   align-items: start;
 }
 
-.site-quote-brand p {
-  margin: 0 0 16px;
-  color: #555;
-  line-height: 1.6;
-}
-
-.site-quote-phone {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
-  min-height: 88px;
-  padding: 14px 16px;
-  background: #f3f3f3;
-  border-radius: 8px;
-}
-
-.site-quote-phone img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-}
-
-.site-quote-phone a {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #222;
-  letter-spacing: 0;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.site-quote-lead {
-  margin-top: 16px !important;
-}
-
 .site-quote {
   display: grid;
   gap: 12px;
 }
 
-.site-quote label {
-  display: grid;
-  gap: 6px;
-  font-size: 0.88rem;
+.site-form-table th {
+  width: 8.5rem;
   font-weight: 700;
-  color: #333;
-  line-height: 1.3;
+  white-space: nowrap;
+  vertical-align: top;
+  padding-top: 16px;
 }
 
-.site-quote label span {
-  color: #c0392b;
+.site-form-table td {
+  padding: 8px 0 8px 12px;
 }
 
-.site-quote input,
-.site-quote textarea {
+.site-form-table input,
+.site-form-table textarea {
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border: 1px solid #d8d8d8;
   border-radius: 4px;
   background: #fff;
@@ -400,13 +303,13 @@ a {
 }
 
 .site-quote-submit {
-  width: 100%;
-  margin-top: 4px;
+  justify-self: start;
+  min-width: 140px;
   border: 0;
   background: #2b2b2b;
   color: #fff;
   font-weight: 700;
-  padding: 14px;
+  padding: 10px 18px;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -420,118 +323,24 @@ a {
   font-weight: 600;
 }
 
-.site-faq-band {
-  color: #fff;
-  padding: 64px 16px;
-  background:
-    linear-gradient(90deg, rgba(18, 50, 95, 0.84), rgba(18, 50, 95, 0.72)),
-    url("/site/quote-bg.jpg") center / cover no-repeat;
+.site-faq-table th {
+  width: 38%;
+  white-space: normal;
 }
 
-.site-faq-band .site-heading {
-  color: #9cc7ff;
-  margin-bottom: 8px;
-}
-
-.site-faq-band p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-}
-
-.site-faq details {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-  padding: 14px 0;
-}
-
-.site-faq summary {
+.site-row-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #1d4f91;
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 700;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  line-height: 1.4;
-  min-height: 28px;
+  text-align: left;
 }
 
-.site-faq summary::-webkit-details-marker {
-  display: none;
-}
-
-.site-faq summary::after {
-  content: "∨";
-  flex-shrink: 0;
-  font-weight: 400;
-}
-
-.site-faq details p {
-  margin: 10px 0 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.7;
-}
-
-.site-banner {
-  display: block;
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-}
-
-.site-banner img {
-  display: block;
-  width: 100%;
-  height: 360px;
-  object-fit: cover;
-}
-
-.site-banner-copy {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
-  max-width: 34rem;
-  color: #fff;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-}
-
-.site-banner-copy p {
-  margin: 0 0 12px;
-  font-weight: 600;
-  line-height: 1.55;
-}
-
-.site-banner-copy span {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  background: #fff;
-  color: #111;
-  font-weight: 700;
-  border-radius: 4px;
-}
-
-.site-usedcar-card {
-  padding: 32px 28px;
-  background: #f4f6f8;
-  border-radius: 8px;
-}
-
-.site-usedcar-card p {
-  margin: 0 0 16px;
-  max-width: 40rem;
-  color: #444;
-  line-height: 1.7;
-}
-
-.site-usedcar-card span {
-  display: inline-flex;
-  padding: 8px 18px;
-  background: #fff;
-  border: 1px solid #d0d0d0;
-  font-weight: 700;
+.site-row-link:hover {
+  text-decoration: underline;
 }
 
 .site-table-wrap {
@@ -599,6 +408,12 @@ a {
 
 .site-page .login-hero-panel {
   animation: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.login-live-count {
+  margin-top: 10px;
 }
 
 .site-footer {
@@ -613,19 +428,13 @@ a {
 }
 
 .site-footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   margin-bottom: 16px;
 }
 
-.site-footer-brand img {
-  width: auto;
-  height: 48px;
-  object-fit: contain;
-  background: #fff;
-  border-radius: 8px;
-  padding: 4px;
+.site-footer-brand strong {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
 }
 
 .site-footer-brand p {
@@ -697,16 +506,7 @@ a {
 
 @media (max-width: 900px) {
   .site-hero {
-    min-height: 0;
-    padding: 48px 16px 40px;
-  }
-
-  .site-hero-cards {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .site-hero-cards a {
-    height: 156px;
+    padding: 32px 16px 0;
   }
 
   .site-quote-layout,
@@ -715,37 +515,20 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .site-banner img {
-    height: 240px;
-  }
-
-  .site-banner-copy {
-    position: static;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    padding: 16px 4px 0;
-    color: #222;
-    text-shadow: none;
-    max-width: none;
-  }
-
-  .site-quote-phone {
-    grid-template-columns: 56px minmax(0, 1fr);
-  }
-
-  .site-quote-phone img {
-    width: 56px;
-    height: 56px;
-  }
-
-  .site-quote-phone a {
-    font-size: 1.2rem;
+  .site-form-table th,
+  .site-faq-table th,
+  .site-table tbody th {
+    width: auto;
+    white-space: normal;
   }
 
   .site-table th,
   .site-table td {
     font-size: 0.84rem;
+  }
+
+  .site-logo span {
+    display: none;
   }
 }
 
