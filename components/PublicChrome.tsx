@@ -14,7 +14,6 @@ const NAV = [
   },
   { href: "/login#usedcar", label: "직영중고차몰" },
   { href: "/login#export", label: "수출경매" },
-  { href: "#recruit", label: "인재채용" },
 ];
 
 export function PublicHeader() {
@@ -69,7 +68,7 @@ export function PublicHeader() {
 
 export function PublicFooter() {
   return (
-    <footer className="site-footer" id="recruit">
+    <footer className="site-footer">
       <div className="site-footer-inner">
         <div className="site-footer-brand">
           {/* eslint-disable-next-line @next/next/no-img-element */}
