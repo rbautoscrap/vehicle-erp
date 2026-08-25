@@ -159,7 +159,7 @@ export default function LoginPage() {
       <section className="site-hero" id="home">
         <div className="site-hero-inner">
           <p className="site-hero-kicker">정부정식 관허폐차사업소 알비오토 리싸이클링</p>
-          <h1>RBAUTO ONE STOP SERVICE</h1>
+          <h1 className="site-hero-title">RBAUTO ONE STOP SERVICE</h1>
           <ul className="site-hero-cards">
             {SERVICES.map((item) => (
               <li key={item.label}>
@@ -242,7 +242,7 @@ export default function LoginPage() {
       <section className="site-faq-band">
         <div className="site-section-inner site-faq-layout">
           <div>
-            <h2>궁금한 점이 있으신가요?</h2>
+            <h2 className="site-heading">궁금한 점이 있으신가요?</h2>
             <p>온라인으로 간편하게 자주 묻는 질문을 통해 확인해보세요</p>
           </div>
           <div className="site-faq">
@@ -256,24 +256,9 @@ export default function LoginPage() {
         </div>
       </section>
 
-      <section className="site-section" id="about">
-        <div className="site-section-inner site-prose">
-          <h2>회사소개</h2>
-          <p>
-            알비오토는 환경을 생각하는 새로운 패러다임의 친환경 기업입니다. 폐차
-            말소된 자동차를 전문적으로 해체하여 재활용하며, 환경보호와 자원 순환을
-            최우선 목표로 삼고 있습니다.
-          </p>
-          <p>
-            해체된 자동차에서 얻은 자원을 세계 각지에 공급하며, 매년 수천 톤의 폐차
-            해체·재활용을 통해 지속 가능한 자원 순환 경제에 기여합니다.
-          </p>
-        </div>
-      </section>
-
       <section className="site-section site-section-alt" id="parts">
         <div className="site-section-inner">
-          <h2>친환경중고부품몰</h2>
+          <h2 className="site-heading">친환경중고부품몰</h2>
           <a
             className="site-banner"
             href="http://rbauto.co.kr"
@@ -295,7 +280,7 @@ export default function LoginPage() {
 
       <section className="site-section" id="usedcar">
         <div className="site-section-inner">
-          <h2>직영중고차몰</h2>
+          <h2 className="site-heading">직영중고차몰</h2>
           <div className="site-usedcar-card">
             <p>
               믿을 수 있는 곳을 찾고 계신가요? 직영중고차 전문 RBAUTO와 함께 하세요.
@@ -309,7 +294,7 @@ export default function LoginPage() {
       <section className="site-section site-section-alt" id="export">
         <div className="site-section-inner site-split">
           <div>
-            <h2>수출경매</h2>
+            <h2 className="site-heading">수출경매</h2>
             <p className="site-export-lead">
               Only for Export buyer. You can bid at auctions you wanted to export.
               Check crushed cars with our live auction.

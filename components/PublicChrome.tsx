@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 
 const NAV = [
-  { href: "/login#home", label: "HOME" },
-  { href: "/login#about", label: "회사소개" },
+  { href: "/login", label: "HOME" },
+  { href: "/about", label: "회사소개" },
   { href: "/login#scrap", label: "폐차감정" },
   {
     href: "http://rbauto.co.kr",
@@ -14,7 +14,7 @@ const NAV = [
   },
   { href: "/login#usedcar", label: "직영중고차몰" },
   { href: "/login#export", label: "수출경매" },
-  { href: "/login#recruit", label: "인재채용" },
+  { href: "#recruit", label: "인재채용" },
 ];
 
 export function PublicHeader() {

@@ -4,7 +4,9 @@ import { usePathname } from "next/navigation";
 
 export function PartnerBanner() {
   const pathname = usePathname();
-  if (pathname === "/login" || pathname === "/signup") return null;
+  if (pathname === "/login" || pathname === "/signup" || pathname === "/about") {
+    return null;
+  }
 
   return (
     <a
