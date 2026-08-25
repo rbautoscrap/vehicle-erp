@@ -3,8 +3,9 @@ import "./globals.css";
 import { PartnerBanner } from "@/components/PartnerBanner";
 
 export const metadata: Metadata = {
-  title: "KOREA AUTO AUTION",
-  description: "Simple timed vehicle auctions",
+  title: "주식회사 알비오토 | RBAUTO",
+  description:
+    "정부정식 관허폐차사업소 알비오토 리싸이클링. 폐차·중고차·중고부품·수출 원스톱 서비스",
 };
 
 export default function RootLayout({
@@ -13,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
         <link
           rel="stylesheet"

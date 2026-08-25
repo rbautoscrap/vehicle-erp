@@ -1,4 +1,11 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export function PartnerBanner() {
+  const pathname = usePathname();
+  if (pathname === "/login" || pathname === "/signup") return null;
+
   return (
     <a
       className="partner-banner"
