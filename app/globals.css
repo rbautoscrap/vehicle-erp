@@ -410,10 +410,19 @@ a {
   flex: 1;
 }
 
-.site-page .login-hero-panel {
+.site-page .login-wrap {
+  min-height: calc(100dvh - 280px);
+  width: 100%;
+}
+
+.site-page .login-hero-panel,
+.login-wrap .login-hero-panel {
   animation: none;
-  border-radius: 0;
-  box-shadow: none;
+  width: min(400px, 100%);
+  max-width: 400px;
+  margin-inline: auto;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(21, 32, 51, 0.06);
 }
 
 .login-live-count {
@@ -1523,7 +1532,8 @@ select {
 }
 
 .login-hero-panel {
-  width: 100%;
+  width: min(400px, 100%);
+  max-width: 400px;
   padding: 28px 24px 22px;
   border-radius: 12px;
   background: var(--login-panel);
