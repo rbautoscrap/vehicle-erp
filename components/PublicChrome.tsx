@@ -24,7 +24,7 @@ export function PublicHeader() {
       <div className="site-header-inner">
         <Link href="/login" className="site-logo" onClick={() => setOpen(false)}>
           <strong>RBAUTO</strong>
-          <span>주식회사 알비오토</span>
+          <span>알비오토</span>
         </Link>
         <button
           type="button"

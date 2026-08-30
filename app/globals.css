@@ -132,10 +132,12 @@ a {
 
 .site-logo {
   display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1px;
   flex-shrink: 0;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .site-logo strong {
@@ -542,10 +544,6 @@ a {
   .site-table th,
   .site-table td {
     font-size: 0.84rem;
-  }
-
-  .site-logo span {
-    display: none;
   }
 }
 
