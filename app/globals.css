@@ -402,27 +402,12 @@ a {
   min-height: calc(100dvh - 220px);
 }
 
-#login-panel,
 #scrap {
   scroll-margin-top: 88px;
 }
 
 .site-main-only {
   flex: 1;
-}
-
-.site-login-target {
-  display: none;
-  padding: 0 16px 48px;
-}
-
-.site-login-target:target {
-  display: block;
-}
-
-.site-login-target .login-hero-panel {
-  max-width: 420px;
-  margin: 0 auto;
 }
 
 .site-page .login-hero-panel {

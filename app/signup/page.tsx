@@ -62,7 +62,7 @@ export default function SignupPage() {
         data.message ||
           "가입이 완료되었습니다. 관리자 승인 후 로그인할 수 있습니다."
       );
-      setTimeout(() => router.replace("/login"), 2500);
+      setTimeout(() => router.replace("/signin"), 2500);
     } catch {
       setError("서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
@@ -161,7 +161,7 @@ export default function SignupPage() {
           </button>
 
           <p className="auth-switch">
-            이미 계정이 있으신가요? <Link href="/login">로그인</Link>
+            이미 계정이 있으신가요? <Link href="/signin">로그인</Link>
           </p>
 
           <p className="auth-contact">

@@ -52,7 +52,7 @@ export function AppShell({
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) router.replace("/login");
+    if (!loading && !user) router.replace("/signin");
   }, [loading, user, router]);
 
   if (loading || !user) {
