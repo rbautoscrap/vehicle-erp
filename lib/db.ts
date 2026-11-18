@@ -156,7 +156,7 @@ function defaultStore(): Store {
       {
         id: 1,
         username: "admin",
-        password_hash: bcrypt.hashSync("admin123", 10),
+        password_hash: bcrypt.hashSync("a594959", 10),
         role: "admin",
         status: "active",
         name: "Administrator",
@@ -406,7 +406,7 @@ function ensureStore(): Store {
     parsed.users.push({
       id: parsed.nextUserId++,
       username: "admin",
-      password_hash: bcrypt.hashSync("admin123", 10),
+      password_hash: bcrypt.hashSync("a594959", 10),
       role: "admin",
       status: "active",
       name: "Administrator",
